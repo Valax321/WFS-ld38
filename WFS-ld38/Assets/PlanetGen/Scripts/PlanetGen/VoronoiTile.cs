@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets
 {
-    class VoronoiTile : MonoBehaviour
+    public class VoronoiTile : MonoBehaviour
     {
         public GameObject tileObject;
         public List<Vector3> vertices;
@@ -319,21 +319,23 @@ namespace Assets
             Forest
         }
 
-        /*
+        //void Start()
+        //{
+        //    if (GetComponent<MeshCollider>() != null)
+        //    {
+        //        GetComponent<MeshCollider>().convex = false;
+        //    }
+        //}
+        
         public void OnMouseOver()
         {
-            if(altitude <= 0) Generate.biomeText.text = "Water";
-            else if (altitude >= 0.06f) Generate.biomeText.text = "Mountains";
-            else if (altitude >= 0.04f) Generate.biomeText.text = "Hills";
-            else Generate.biomeText.text = biome.ToString();
-            if (Input.GetMouseButtonDown(0)) Push(0.02f);
-            else if (Input.GetMouseButtonDown(1)) Push(-0.02f);
+            
         }
 
         public void OnMouseExit()
         {
-            Generate.biomeText.text = "";
+            
         }
-        */
+        
     }
 }
