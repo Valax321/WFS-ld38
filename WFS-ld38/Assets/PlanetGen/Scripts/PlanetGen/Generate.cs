@@ -604,8 +604,8 @@ public class Generate : MonoBehaviour
         {
             foreach (var tile in tectonicPlate.tiles)
             {
-                tile.DetermineBiome();
-                if(alsoWater) tile.DetermineBaseBiome();
+                tile.DetermineBiome();                
+                if(alsoWater) tile.DetermineBaseBiome();                
                 if (tile.biome == Biome.Sand) tile.GetComponent<MeshRenderer>().material = sandMat;
                 else if (tile.biome == Biome.Glacier) tile.GetComponent<MeshRenderer>().material = glacierMat;
                 else if (tile.biome == Biome.Plains) tile.GetComponent<MeshRenderer>().material = plainMat;
@@ -627,8 +627,13 @@ public class Generate : MonoBehaviour
         {
             foreach (var tile in plate.tiles)
             {
-                if (tile.altitude > 0.02f) { tile.GetComponent<MeshRenderer>().material = hillMat;}
-                if (tile.altitude > 0.04f) { tile.GetComponent<MeshRenderer>().material = mountainMat; }
+                if (tile.altitude <= 0)
+                {
+                    tile.baseBiome = Biome.Water;
+                }
+
+                //if (tile.altitude > 0.02f) { tile.GetComponent<MeshRenderer>().material = hillMat;}
+                if (tile.altitude > 0.04f) { tile.GetComponent<MeshRenderer>().material = mountainMat; tile.baseBiome = Biome.Mountain; }
                 if (tile.altitude <= 0.00f) { tile.GetComponent<MeshRenderer>().material = sandMat;}
                 if (tile.altitude < -0.02f) tile.GetComponent<MeshRenderer>().material = sand2Mat;
                 if (tile.altitude < -0.04f) tile.GetComponent<MeshRenderer>().material = sand3Mat;
