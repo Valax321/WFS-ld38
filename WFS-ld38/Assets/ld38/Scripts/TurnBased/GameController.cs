@@ -269,7 +269,7 @@ public class GameController : MonoBehaviour
                 OpenUI(tileInfo);
             }
             scriptVoronoiTile = hoveredTile.GetComponent<VoronoiTile>();
-            biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.biome);
+            biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.baseBiome);
             currencyText.text = string.Format("{0}: {1}", currencyName, 10); // PLACEHOLDER
         }
     }

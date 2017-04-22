@@ -11,6 +11,7 @@ public class Ability : ScriptableObject
     public int range;
     public bool isAOE;
     public bool isLastingDamage;
+    public bool usesTarget;
     public bool hasLastingEffects;
     public int damageMin;
     public int damageMax;

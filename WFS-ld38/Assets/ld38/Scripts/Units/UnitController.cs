@@ -19,6 +19,8 @@ public class UnitController : MonoBehaviour
 
     public VoronoiTile currentTile { get; set; }
 
+    public Player player;
+
     void Awake()
     {
         transform.up = GetUpVector();        
@@ -58,8 +60,7 @@ public class UnitController : MonoBehaviour
 
             if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
             {
-                transform.up = GetUpVector();
-                transform.Rotate(transform.up, Random.Range(0f, 359f)); //Give us a random rotation for variety.
+                go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
         }        
     }
@@ -74,7 +75,12 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-        transform.up = GetUpVector();        
+        if (currentTile.altitude > 0)
+        {
+            transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
+        }
+
+        transform.up = GetUpVector();                   
     }
 
     public Vector3 GetUpVector()
