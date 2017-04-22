@@ -14,4 +14,9 @@ public class AbilityBehaviour : MonoBehaviour
     {
         Debug.LogFormat("{0} activated!", ourAbility.abilityName);
     }
+
+    public virtual void OnTurn()
+    {
+
+    }
 }
