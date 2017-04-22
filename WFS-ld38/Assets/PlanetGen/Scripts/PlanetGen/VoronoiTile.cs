@@ -243,6 +243,12 @@ namespace Assets
             if (temperature < 0) temperature = 0;
             if (temperature > 4) temperature = 4;
 
+            if (altitude <= 0)
+            {
+                baseBiome = Biomes.Water;
+                return;
+            }
+
             if (humidity >= 0 && humidity <= 1)
             {
                 if(temperature >= 0 && temperature <= 1) biome = Biomes.Tundra; // tundra
@@ -270,11 +276,17 @@ namespace Assets
         }
 
         public void DetermineBaseBiome()
-        {
+        {            
             if (humidity < 0) humidity = 0;
             if (humidity > 4) humidity = 4;
             if (temperature < 0) temperature = 0;
             if (temperature > 4) temperature = 4;
+
+            if (altitude <= 0)
+            {
+                baseBiome = Biomes.Water;
+                return;
+            }
 
             if (humidity >= 0 && humidity <= 1)
             {
@@ -316,7 +328,8 @@ namespace Assets
             Desert,
             Dirt,
             Tundra,
-            Forest
+            Forest,
+            Water
         }
 
         //void Start()
