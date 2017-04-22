@@ -35,11 +35,15 @@ public class NameGenerator : MonoBehaviour
         //table.GroupTest.Add(new StringCollection() { Key = "Test2", Value = new string[] { "3", "4" } });
         //MakeXML();
 
-        var ta = Resources.Load<TextAsset>("NameTable.xml");
+        var ta = Resources.Load<TextAsset>("NameTable");
         if (ta != null)
         {
             table = XmlDeserialize<NameTable>(ta.text);
             nameLookup = table.GroupTestTyped;
+        }
+        else
+        {
+            Debug.LogError("NameTable.xml not found.");
         }
     }
 

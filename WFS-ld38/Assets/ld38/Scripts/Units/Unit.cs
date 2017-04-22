@@ -18,4 +18,8 @@ public class Unit : ScriptableObject
     public int healthMin;
     public int healthMax;
     public int baseSpeed;
+
+    [Header("Abilities")]
+    public Ability ability1;
+    public Ability ability2;
 }

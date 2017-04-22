@@ -317,6 +317,7 @@ public class Generate : MonoBehaviour
             
             tile.GetComponent<MeshFilter>().mesh = thisTile.tileMesh;
             tile.GetComponent<MeshCollider>().sharedMesh = thisTile.tileMesh;
+            //tile.GetComponent<MeshCollider>().convex = false;
 
             thisTile.Normal = pair.Key;
             tiles.Add(thisTile);
@@ -646,7 +647,7 @@ public class Generate : MonoBehaviour
                     else if (tile.biome == Biome.Forest) tile.GetComponent<MeshRenderer>().material = forestMat;
                 }
                 tile.GetComponent<MeshCollider>().sharedMesh = tile.tileMesh;
-                tile.GetComponent<MeshCollider>().convex = true;
+                tile.GetComponent<MeshCollider>().convex = false;
             }
         }
     }
