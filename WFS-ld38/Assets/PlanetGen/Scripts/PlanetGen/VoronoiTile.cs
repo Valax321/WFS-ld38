@@ -245,7 +245,7 @@ namespace Assets
 
             if (altitude <= 0)
             {
-                baseBiome = Biomes.Water;
+                biome = Biomes.Water;
                 return;
             }
 
