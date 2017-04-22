@@ -2,21 +2,6 @@
 <NameTable xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <GroupTest>
     <Element>
-      <Key>Test</Key>
-      <Value>
-        <Element>1</Element>
-        <Element>2</Element>
-      </Value>
-    </Element>
-    <Element>
-      <Key>Test2</Key>
-      <Value>
-        <Element>3</Element>
-        <Element>4</Element>
-      </Value>
-    </Element>
-
-    <Element>
       <Key>Currency</Key>
       <Value>
         <Element>Apples</Element>
@@ -24,8 +9,12 @@
         <Element>Doughnuts</Element>
         <Element>AUD/cm/g</Element>
         <Element>Gold</Element>
-        <Element>mol</Element>
-        <Element>MT</Element>
+        <Element>mol HCl</Element>
+        <Element>Units</Element>
+        <Element>Bytes</Element>
+        <Element>Freedom Kilograms</Element>
+        <Element>Kitten Souls</Element>
+        <Element>{quantity} of {noun}</Element>
       </Value>
     </Element>
 
@@ -66,7 +55,26 @@
         <Element>Dreary</Element>
         <Element>Uninteresting</Element>
       </Value>
-    </Element>  
+    </Element>
+
+    <Element>
+      <Key>citadel</Key>
+      <Value>
+        <Element>Towering</Element>
+        <Element>Big</Element>
+        <Element>Sizable</Element>
+        <Element>Huuuuge</Element>
+        <Element>Skyscraping</Element>
+        <Element>Adequate</Element>
+        <Element>Altitudinous</Element>
+        <Element>Substantial</Element>
+        <Element>Tremendous</Element>
+        <Element>Citadellic</Element>
+        <Element>Great Big</Element>
+        <Element>Dr Breen's</Element>
+        <Element>Statuesque</Element>
+      </Value>
+    </Element>
     
   </GroupTest>
 </NameTable>

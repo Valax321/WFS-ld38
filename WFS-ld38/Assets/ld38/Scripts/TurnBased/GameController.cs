@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
 
     string currencyName;
 
+    [HideInInspector]
     public Camera cam;
     public GameObject unitSelected;
     public GameObject tileInfo;
@@ -250,7 +251,7 @@ public class GameController : MonoBehaviour
             }
             scriptVoronoiTile = hoveredTile.GetComponent<VoronoiTile>();
             biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.biome);
-            currencyText.text = string.Format("Currency: {0}", 10); // PLACEHOLDER
+            currencyText.text = string.Format("{0}: {1}", currencyName, 10); // PLACEHOLDER
         }
     }
     #endregion
