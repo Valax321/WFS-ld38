@@ -12,6 +12,6 @@ public class AbilityBehaviour : MonoBehaviour
 
     public virtual void Activate()
     {
-
+        Debug.LogFormat("{0} activated!", ourAbility.abilityName);
     }
 }

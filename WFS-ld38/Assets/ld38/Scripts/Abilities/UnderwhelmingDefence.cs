@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OffensiveExplosion : AbilityBehaviour
+public class UnderwhelmingDefence : AbilityBehaviour
 {
     public override void Activate()
     {

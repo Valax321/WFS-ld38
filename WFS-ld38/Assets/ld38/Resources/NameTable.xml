@@ -28,5 +28,45 @@
         <Element>MT</Element>
       </Value>
     </Element>
+
+    <Element>
+      <Key>offensive</Key>
+      <Value>
+        <Element>Rude</Element>
+        <Element>Mean</Element>
+        <Element>Offensive</Element>
+        <Element>Bloody</Element>
+        <Element>Goddamn</Element>
+        <Element>F--king</Element>
+        <Element>Crusty</Element>
+        <Element>Dishonourable</Element>
+        <Element>Imbecilic</Element>        
+        <Element>Ascenine</Element>
+        <Element>Malevolent</Element>
+        <Element>Nerf-worthy</Element>
+        <Element>Slanderous</Element>
+      </Value>
+    </Element>
+
+    <Element>
+      <Key>underwhelming</Key>
+      <Value>
+        <Element>Miserable</Element>
+        <Element>Underwhelming</Element>
+        <Element>Dismal</Element>
+        <Element>Anticlimactic</Element>
+        <Element>Boring</Element>
+        <Element>Depressingly Bland</Element>
+        <Element>Inconceivably Dull</Element>
+        <Element>Sad</Element>
+        <Element>Depressing</Element>
+        <Element>Sterile</Element>
+        <Element>Dull</Element>
+        <Element>Bland</Element>
+        <Element>Dreary</Element>
+        <Element>Uninteresting</Element>
+      </Value>
+    </Element>  
+    
   </GroupTest>
 </NameTable>

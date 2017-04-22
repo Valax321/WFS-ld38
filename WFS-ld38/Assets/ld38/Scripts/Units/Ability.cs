@@ -18,10 +18,31 @@ public class Ability : ScriptableObject
     public int currencyMax;
     public string abilityScript;
 
-    public string GetAbilityName()
+    private string aName;
+    private bool hasSetName;
+    public string abilityName
+    {
+        get
+        {
+            if (!hasSetName)
+            {
+                aName = MakeAbilityName();
+                hasSetName = true;
+            }
+
+            return aName;
+        }
+    }
+
+    /// <summary>
+    /// Warning: this will change every use, so save the result the first time!
+    /// </summary>
+    /// <returns></returns>
+    string MakeAbilityName()
     {
         bool isKey = false;
         string name = "";
+        string key = "";
         foreach (char c in nameKey)
         {
             if (c == '{')
@@ -29,6 +50,27 @@ public class Ability : ScriptableObject
                 isKey = true;
                 continue;
             }
+            else if (c == '}')
+            {
+                var generated = NameGenerator.Instance.GetRandomName(key);
+                key = "";
+                name += generated;
+                isKey = false;
+                continue;
+            }
+            else
+            {
+                if (isKey)
+                {
+                    key += c;
+                }
+                else
+                {
+                    name += c;
+                }
+            }
         }
+
+        return name;
     }
 }
