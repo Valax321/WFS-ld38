@@ -30,6 +30,8 @@ public class GameController : MonoBehaviour
     bool gameFinished;
     bool gameStarted;
 
+    string currencyName;
+
     void Start()
     {
         GeneratePlanet(); //TEMP
@@ -81,6 +83,9 @@ public class GameController : MonoBehaviour
             }
             Debug.LogFormat("Added player {0}", i);
         }
+
+        currencyName = NameGenerator.Instance.GetRandomName("Currency");
+        Debug.LogFormat("Currency name: {0}", currencyName);
     }
 
     public void GeneratePlanet()
@@ -142,4 +147,10 @@ public class Player
     public bool isAI;
     public int number;
     public GameObject playerCamera;
+
+    #region Gameplay Properties
+    public ulong currencyPoints;
+    public ulong currencyPerTurn;
+    public int health;
+    #endregion
 }

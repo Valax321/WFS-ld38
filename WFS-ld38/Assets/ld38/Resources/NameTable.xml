@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<NameTable xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GroupTest>
+    <Element>
+      <Key>Test</Key>
+      <Value>
+        <Element>1</Element>
+        <Element>2</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>Test2</Key>
+      <Value>
+        <Element>3</Element>
+        <Element>4</Element>
+      </Value>
+    </Element>
+
+    <Element>
+      <Key>Currency</Key>
+      <Value>
+        <Element>Apples</Element>
+        <Element>Oranges</Element>
+        <Element>Doughnuts</Element>
+        <Element>AUD/cm/g</Element>
+        <Element>Gold</Element>
+        <Element>mol</Element>
+        <Element>MT</Element>
+      </Value>
+    </Element>
+  </GroupTest>
+</NameTable>
