@@ -17,32 +17,50 @@ public class UnitController : MonoBehaviour
 
     public int health;
 
-    public VoronoiTile currentTile { get; private set; }
+    public VoronoiTile currentTile { get; set; }
 
     void Awake()
     {
-        ability1 = unitType.ability1;
-        ability2 = unitType.ability2;
+        transform.up = GetUpVector();        
+    }
 
-        try
+    public void InitUnit()
+    {
+        if (unitType.hasAbilities)
         {
-            aScript1 = gameObject.AddComponent(System.Type.GetType(ability1.abilityScript)) as AbilityBehaviour;
-            aScript2 = gameObject.AddComponent(System.Type.GetType(ability2.abilityScript)) as AbilityBehaviour;
-        }
-        catch
-        {
-            Debug.LogError("Could not add ability scripts! Check your ability class names!");
-            invalid = true;
+
+            ability1 = unitType.ability1;
+            ability2 = unitType.ability2;
+
+            try
+            {
+                aScript1 = gameObject.AddComponent(System.Type.GetType(ability1.abilityScript)) as AbilityBehaviour;
+                aScript2 = gameObject.AddComponent(System.Type.GetType(ability2.abilityScript)) as AbilityBehaviour;
+            }
+            catch
+            {
+                Debug.LogError("Could not add ability scripts! Check your ability class names!");
+                invalid = true;
+            }
+
+            if (!invalid)
+            {
+                aScript1.ourAbility = ability1;
+                aScript2.ourAbility = ability2;
+            }
         }
 
         if (!invalid)
-        {
-            aScript1.ourAbility = ability1;
-            aScript2.ourAbility = ability2;
+        {            
             var go = Instantiate(unitType.unitPrefab);
             go.transform.SetParent(transform, false);
-
             health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
+
+            if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
+            {
+                transform.up = GetUpVector();
+                transform.Rotate(transform.up, Random.Range(0f, 359f)); //Give us a random rotation for variety.
+            }
         }        
     }
 
@@ -56,18 +74,26 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-        transform.up = transform.position - Vector3.zero;
+        transform.up = GetUpVector();        
+    }
+
+    public Vector3 GetUpVector()
+    {
+        return transform.position - Vector3.zero;
     }
 
     public void UseAbility(bool isAbility1)
     {
-        if (isAbility1)
+        if (unitType.hasAbilities)
         {
-            aScript1.Activate();
-        }
-        else
-        {
-            aScript2.Activate();
+            if (isAbility1)
+            {
+                aScript1.Activate();
+            }
+            else
+            {
+                aScript2.Activate();
+            }
         }
     }
 }

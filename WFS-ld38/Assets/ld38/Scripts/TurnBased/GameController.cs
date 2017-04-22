@@ -40,6 +40,7 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public Camera cam;
     public GameObject unitSelected;
+    public Unit unitToSpawn; //Spawning off a Unit SO
     public GameObject tileInfo;
     public Text biomeText;
     public Text currencyText;
@@ -72,9 +73,14 @@ public class GameController : MonoBehaviour
             RaycastHover();
             if (Input.GetButtonDown("Fire1"))
             {
-                if (unitSelected != null)
+                //if (unitSelected != null)
+                //{
+                //    PlaceUnits();
+                //}
+
+                if (unitToSpawn != null)
                 {
-                    PlaceUnits();
+                    var unit = SpawnUnitFromScriptableObject(unitToSpawn);
                 }
             }
             //if (Input.GetButtonDown("Fire2"))
@@ -222,12 +228,25 @@ public class GameController : MonoBehaviour
         unitSelected = unit;
     }
 
+    [Obsolete("Use SpawnUnitFromScriptableObject() instead.")]
     void PlaceUnits()
     {
         Instantiate(unitSelected, scriptVoronoiTile.centerPoint, new Quaternion(0,0,0,0));
         // THE CENTRE THAT THE SCRIPT RETURNS IN AT ALTITUDE 0
 
         // DO MORE CALCULATION HERE
+    }
+
+    GameObject SpawnUnitFromScriptableObject(Unit u)
+    {
+        var go = new GameObject(u.unitName, typeof(UnitController));
+        Debug.Log(scriptVoronoiTile.altitude);
+        go.transform.position = scriptVoronoiTile.centerPoint;
+        var crtl = go.GetComponent<UnitController>();
+        crtl.unitType = u;
+        crtl.currentTile = scriptVoronoiTile;
+        crtl.InitUnit();
+        return go;
     }
 
     void CancelSelection()
@@ -254,7 +273,7 @@ public class GameController : MonoBehaviour
             currencyText.text = string.Format("{0}: {1}", currencyName, 10); // PLACEHOLDER
         }
     }
-    #endregion
+    #endregion    
 }
 
 public class Player

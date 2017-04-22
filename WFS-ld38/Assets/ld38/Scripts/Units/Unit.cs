@@ -10,7 +10,8 @@ public class Unit : ScriptableObject
         Land,
         Air,
         Sea,
-        Building
+        Captial,
+        CurrencyGenerator
     }
 
     [Header("Unit Properties")]
@@ -24,6 +25,7 @@ public class Unit : ScriptableObject
     public GameObject unitPrefab;
 
     [Header("Abilities")]
+    public bool hasAbilities;
     public Ability ability1;
     public Ability ability2;
 
