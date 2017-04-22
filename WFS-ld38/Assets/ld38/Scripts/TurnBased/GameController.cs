@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine;
+using Assets;
 
 [AddComponentMenu("ld38/Game Controller")]
 public class GameController : MonoBehaviour
 {
+    #region Declaration
     public List<Player> players = new List<Player>();
 
     public int PlayerCount
@@ -18,7 +23,7 @@ public class GameController : MonoBehaviour
 
     public int seed;
     public float waterLevel;
-
+    
     public Generate planet;
     public GameObject cameraPrefab;
 
@@ -31,6 +36,17 @@ public class GameController : MonoBehaviour
     bool gameStarted;
 
     string currencyName;
+
+    public Camera cam;
+    public GameObject selectedUnits;
+    public GameObject tileInfo;
+    public Text biomeText;
+    public Text currencyText;
+
+    private GameObject hoveredTile;
+    private GameObject lastHoveredTile = null;
+    private VoronoiTile scriptVoronoiTile;
+    #endregion
 
     void Start()
     {
@@ -48,6 +64,30 @@ public class GameController : MonoBehaviour
         {
             GameplayUpdate();
         }
+
+        #region DAVID
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
+            RaycastHover();
+            if (Input.GetButtonDown("Fire1"))
+            {
+                if (selectedUnits != null)
+                {
+                    PlaceUnits();
+                }
+            }
+            //if (Input.GetButtonDown("Fire2"))
+            //{
+            //    CancelSelection();
+            //}
+            if (lastHoveredTile != hoveredTile)
+            {
+                UpdateTileInfo();
+                lastHoveredTile = hoveredTile;
+            }
+        }
+
+        #endregion
     }
 
     void GameplayUpdate()
@@ -57,7 +97,7 @@ public class GameController : MonoBehaviour
         if (!current.hasPlayedThisTurn)
         {
             current.hasPlayedThisTurn = true;
-            HandleTurn(current);        
+            HandleTurn(current);
         }
         else
         {
@@ -130,7 +170,81 @@ public class GameController : MonoBehaviour
 
             p.playerCamera.SetActive(true);
         }
+        #region DAVID
+        cam = FindObjectOfType<CameraControl>().gameObject.GetComponent<Camera>();
+        #endregion
     }
+
+    #region DAVID
+    void RaycastHover()
+    {
+        RaycastHit hit;
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, 50.0f))
+        {
+            if (hit.transform != null)
+            {
+                hoveredTile = hit.transform.gameObject;
+                HighlightObject();
+                // ^^^^
+                // NOT DONE
+                //
+            }
+            else
+            {
+                hoveredTile = null;
+            }
+        }
+    }
+
+    public void CloseUI(GameObject UI) // MOVE THIS TO GAMECONTROLLER
+    {
+        // PLAY CLOSING ANIMATION
+
+        UI.SetActive(false);
+    }
+
+    public void OpenUI(GameObject UI) // MOVE THIS TO GAMECONTROLLER
+    {
+        // PLAY OPENING ANIMATION
+
+        UI.SetActive(true);
+    }
+
+    void HighlightObject()
+    {
+
+    }
+
+    void PlaceUnits()
+    {
+
+    }
+
+    void CancelSelection()
+    {
+        selectedUnits = null;
+    }
+
+    void UpdateTileInfo()
+    {
+        if (hoveredTile == null)
+        {
+            scriptVoronoiTile = null;
+            CloseUI(tileInfo);
+        }
+        else
+        {
+            if (lastHoveredTile == null)
+            {
+                OpenUI(tileInfo);
+            }
+            scriptVoronoiTile = hoveredTile.GetComponent<VoronoiTile>();
+            biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.biome);
+            currencyText.text = string.Format("Currency: {0}", 10); // PLACEHOLDER
+        }
+    }
+    #endregion
 }
 
 public class Player
