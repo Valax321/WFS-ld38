@@ -71,6 +71,8 @@ public class GameController : MonoBehaviour
             if (cameraPrefab != null)
             {
                 var cam = Instantiate(cameraPrefab);
+                cam.GetComponent<CameraControl>().target = planet.gameObject;
+                cam.transform.position = planet.transform.position;
                 players.Add(new Player(i, false, cam));
             }
             else
@@ -113,7 +115,7 @@ public class GameController : MonoBehaviour
 
     void HandleTurn(Player p)
     {
-        Debug.LogFormat("Player {0}'s turn", p.number);        
+        Debug.LogFormat("Player {0}'s turn", p.number);
         if (p.playerCamera != null)
         {
             foreach (Player p2 in players)
