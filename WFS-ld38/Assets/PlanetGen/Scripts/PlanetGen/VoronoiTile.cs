@@ -186,6 +186,13 @@ namespace Assets
             {
                 Vector3 toAdd = FindClosest(centerPoint, tileCenters);
                 tileCenters.Remove(toAdd);
+
+                if (tileObject == null)
+                {
+                    Debug.LogError("tileObject has been destroyed!");
+                    return;
+                }
+
                 tileObject.AddComponent<VoronoiTile>();
                 var tileComp = tileObject.GetComponent<VoronoiTile>();
                 foreach (var tile in otherTiles)

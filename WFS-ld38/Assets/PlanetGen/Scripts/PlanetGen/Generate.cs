@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Assets;
 using MIConvexHull;
 using UnityEngine.UI;
+using System.Collections;
 using Biome = Assets.VoronoiTile.Biomes;
 using Random = UnityEngine.Random;
 
@@ -23,6 +24,8 @@ public class Generate : MonoBehaviour
     private GameObject botWarmGizmo;
 
     private float seconds = 4f;
+
+    public bool generationDone;
 
     //public float test { get; set; }
     // PUBLIC DECLARATIONS
@@ -140,7 +143,7 @@ public class Generate : MonoBehaviour
         //texts = FindObjectsOfType<Text>();
         //biomeText = texts[12];
 
-        Create();
+        //Create();
     }
 
     public void Export()
@@ -171,12 +174,14 @@ public class Generate : MonoBehaviour
         mesh.CombineMeshes(combine, false);
     }
 
-    public void Create()
+    public IEnumerator Create()
     {
+        /*
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
         }
+        */
 
         //InputField[] fields = FindObjectsOfType<InputField>();
         //InputField numseed = fields[0];
@@ -210,6 +215,7 @@ public class Generate : MonoBehaviour
             voronoiVertices[i] = vertices[i];
             meshVerts[i] = vertices[i].ToVector3(); ;
             i++;
+            //yield return null;
         }
         // SET LAST EXTRA VERTEX
         voronoiVertices[numberOfVertices] = new Vertex3(0, 0, 0);
@@ -231,7 +237,8 @@ public class Generate : MonoBehaviour
             vertsForVoronoiHull.Add(source);
             vertsForVoronoiHull.Add(target);
             index++;
-        }
+            //yield return null;
+        }        
 
         // REMOVE DUPLICATE POINTS
         vertsForVoronoiHull = vertsForVoronoiHull.Distinct().ToList();
@@ -244,6 +251,7 @@ public class Generate : MonoBehaviour
         {
             verticesDelaunay[g] = new Vertex3(vertsForVoronoiHull[g].x, vertsForVoronoiHull[g].y, vertsForVoronoiHull[g].z);
             g++;
+            //yield return null;
         }
 
         // GENERATE VORONOI HULL
@@ -289,8 +297,10 @@ public class Generate : MonoBehaviour
             normals[roundedKey].Add(a);
             normals[roundedKey].Add(b);
             normals[roundedKey].Add(c);
+            //yield return null;
         }
- 
+        yield return null;
+
         // CREATE VORONOI TILES
         List<VoronoiTile> tiles = new List<VoronoiTile>();
         foreach (var pair in normals)
@@ -311,11 +321,13 @@ public class Generate : MonoBehaviour
             thisTile.Normal = pair.Key;
             tiles.Add(thisTile);
             ++numberOfTiles;
+            //yield return null;
         }
+        //yield return null;
 
         foreach (var tile in tiles)
         {
-            tile.FindNeighbors(tiles); 
+            tile.FindNeighbors(tiles);
         }
 
         List<VoronoiTile> waterTiles = new List<VoronoiTile>();
@@ -333,6 +345,7 @@ public class Generate : MonoBehaviour
             tile.GetComponent<MeshFilter>().mesh = thisTile.tileMesh;
             tile.GetComponent<MeshRenderer>().material = oceanMat;
             waterTiles.Add(thisTile);
+            //yield return null;
         }
 
         ocean = new GameObject("Ocean");
@@ -359,6 +372,7 @@ public class Generate : MonoBehaviour
         
         // FILL
         FloodFillSimultaneous(ref colors, plateMaterials, ref tiles);
+        //yield return null;
         
         
         // GROUP PLATES
@@ -377,6 +391,7 @@ public class Generate : MonoBehaviour
             if (land < landAmount) thisTecPlate.isLand = true;
             plateTest.transform.parent = transform;
             plateList.Add(thisTecPlate);
+            //yield return null;
         }
 
         LoadMaterials();
@@ -390,6 +405,9 @@ public class Generate : MonoBehaviour
         DetermineBiomes(true);
         GenerateHeight();
         DetermineHeightBiomes();
+
+        generationDone = true;
+        yield return null;
     }
 
     public void SetMaterialToBlank()
