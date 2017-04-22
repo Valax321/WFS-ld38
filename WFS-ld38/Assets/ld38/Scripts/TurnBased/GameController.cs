@@ -38,7 +38,7 @@ public class GameController : MonoBehaviour
     string currencyName;
 
     public Camera cam;
-    public GameObject selectedUnits;
+    public GameObject unitSelected;
     public GameObject tileInfo;
     public Text biomeText;
     public Text currencyText;
@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour
             RaycastHover();
             if (Input.GetButtonDown("Fire1"))
             {
-                if (selectedUnits != null)
+                if (unitSelected != null)
                 {
                     PlaceUnits();
                 }
@@ -197,14 +197,14 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void CloseUI(GameObject UI) // MOVE THIS TO GAMECONTROLLER
+    public void CloseUI(GameObject UI)
     {
         // PLAY CLOSING ANIMATION
 
         UI.SetActive(false);
     }
 
-    public void OpenUI(GameObject UI) // MOVE THIS TO GAMECONTROLLER
+    public void OpenUI(GameObject UI)
     {
         // PLAY OPENING ANIMATION
 
@@ -216,20 +216,29 @@ public class GameController : MonoBehaviour
 
     }
 
+    public void SetUnitSelected(GameObject unit)
+    {
+        unitSelected = unit;
+    }
+
     void PlaceUnits()
     {
+        Instantiate(unitSelected, scriptVoronoiTile.centerPoint, new Quaternion(0,0,0,0));
+        // THE CENTRE THAT THE SCRIPT RETURNS IN AT ALTITUDE 0
 
+        // DO MORE CALCULATION HERE
     }
 
     void CancelSelection()
     {
-        selectedUnits = null;
+        unitSelected = null;
     }
 
     void UpdateTileInfo()
     {
         if (hoveredTile == null)
         {
+            // NOT WORKING
             scriptVoronoiTile = null;
             CloseUI(tileInfo);
         }
