@@ -7,11 +7,16 @@ using Assets;
 [AddComponentMenu("Gameplay/Unit")]
 public class UnitController : MonoBehaviour
 {
-    AbilityBehaviour aScript1;
-    AbilityBehaviour aScript2;
+    static Color OUTLINE_COLOR = Color.blue;
+    static float OUTLINE_THICKNESS = 0.05f;
+
+    protected AbilityBehaviour aScript1;
+    protected AbilityBehaviour aScript2;
     public Unit unitType;
     public Ability ability1;
     public Ability ability2;
+    protected OutlineEffect outline;
+    public bool shouldOutline;
     public int movesThisTurn;
     bool invalid;
 
@@ -20,11 +25,6 @@ public class UnitController : MonoBehaviour
     public VoronoiTile currentTile { get; set; }
 
     public Player player;
-
-    void Awake()
-    {
-        transform.up = GetUpVector();        
-    }
 
     public void InitUnit()
     {
@@ -62,10 +62,21 @@ public class UnitController : MonoBehaviour
             {
                 go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
-        }        
+
+            outline = go.AddComponent<OutlineEffect>();
+            outline.outlineColor = OUTLINE_COLOR;
+            outline.width = OUTLINE_THICKNESS;
+        }
+
+        ChildUnitInit();        
     }
 
-    void GetSurroundingTiles(int depth)
+    protected virtual void ChildUnitInit()
+    {
+
+    }
+
+    protected void GetSurroundingTiles(int depth)
     {
         if (currentTile != null)
         {
@@ -75,12 +86,19 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
+        BaseUpdate();
+    }
+
+    protected virtual void BaseUpdate()
+    {
         if (currentTile.altitude > 0)
         {
             transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
         }
 
-        transform.up = GetUpVector();                   
+        transform.up = GetUpVector();
+
+        outline.outlineColor = shouldOutline ? OUTLINE_COLOR : Color.black;
     }
 
     public Vector3 GetUpVector()
@@ -101,5 +119,27 @@ public class UnitController : MonoBehaviour
                 aScript2.Activate();
             }
         }
+    }
+
+    public virtual void Damage(int damage)
+    {
+        if (health - damage >= 0)
+        {
+            health -= damage;
+        }
+        else
+        {
+            health = 0;
+        }
+
+        if (health <= 0)
+        {
+            Killed();
+        }
+    }
+
+    protected virtual void Killed()
+    {
+
     }
 }
