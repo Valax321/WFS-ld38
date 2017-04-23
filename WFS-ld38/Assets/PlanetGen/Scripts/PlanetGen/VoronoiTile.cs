@@ -36,6 +36,56 @@ namespace Assets
         //GAMEPLAY
         public UnitController occupyingUnit;
 
+        static List<VoronoiTile> searchedTiles = new List<VoronoiTile>();
+
+        public static bool CanMoveTo(VoronoiTile start, VoronoiTile target, int maxDist)
+        {
+            searchedTiles.Clear();
+            return CanMoveToInternal(start, target, maxDist);
+        }
+
+        static bool CanMoveToInternal(VoronoiTile start, VoronoiTile target, int maxDist)
+        {
+            if (maxDist == 0) return false;
+
+            Debug.LogFormat("Searching depth {0}", maxDist);
+
+            var tiles = start.neighbors;
+            int i = tiles.Count;
+            Debug.LogFormat("Tile count: {0}", i);
+            foreach (var tile in tiles)
+            {
+                if (tile == start) continue;
+                if (searchedTiles.Contains(tile)) continue;
+
+                searchedTiles.Add(tile);
+                if (tile == target)
+                {
+                    Debug.LogFormat("Found at depth {0}", maxDist);
+                    return true;
+                }       
+                else
+                {
+                    if (CanMoveTo(tile, target, maxDist - 1))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool CheckSurrounding(VoronoiTile a, VoronoiTile b)
+        {
+            var surrounding = a.neighbors;
+            foreach (var tile in surrounding)
+            {
+                if (a == b) return true;
+            }
+            return false;
+        }
+
         public void Initialize(List<Vector3> verts, bool ocean)
         {
             // initialize

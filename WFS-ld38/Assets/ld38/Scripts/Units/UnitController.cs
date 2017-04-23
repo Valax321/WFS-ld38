@@ -8,6 +8,8 @@ using cakeslice;
 [AddComponentMenu("Gameplay/Unit")]
 public class UnitController : MonoBehaviour
 {
+    static float UnitMoveSpeed = 3.0f;
+
     protected AbilityBehaviour aScript1;
     protected AbilityBehaviour aScript2;
     public Unit unitType;
@@ -93,10 +95,12 @@ public class UnitController : MonoBehaviour
 
     protected virtual void BaseUpdate()
     {
-        if (currentTile.altitude > 0)
-        {
-            transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
-        }
+        transform.position = Vector3.MoveTowards(transform.position, currentTile.altitude > 0 ? currentTile.centerPoint + GetUpVector() * currentTile.altitude : currentTile.centerPoint, UnitMoveSpeed * Time.deltaTime);
+
+        //if (currentTile.altitude > 0)
+        //{
+        //    transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
+        //}
 
         transform.up = GetUpVector();
 
@@ -106,6 +110,11 @@ public class UnitController : MonoBehaviour
     public Vector3 GetUpVector()
     {
         return transform.position - Vector3.zero;
+    }
+
+    public void MoveToTile(VoronoiTile tile)
+    {
+        currentTile = tile;
     }
 
     public void UseAbility(bool isAbility1, VoronoiTile tile)
