@@ -119,6 +119,11 @@ public class UnitController : MonoBehaviour
     public virtual void StartOfTurn()
     {
         movesThisTurn = unitType.baseSpeed;
+        if (unitType.hasAbilities)
+        {
+            aScript1.OnTurn();
+            aScript2.OnTurn();
+        }
     }
 
     public Vector3 GetUpVector()
@@ -143,10 +148,17 @@ public class UnitController : MonoBehaviour
         if (CanMakeMove(1) && (tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
         {            
             currentTile.occupyingUnit = null;
-            currentTile = tile;
+            var old = currentTile;
+            currentTile = tile;            
             tile.occupyingUnit = this;            
             MakeMove(1);
             unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
+
+            if (unitType.hasAbilities)
+            {
+                aScript1.OnMove(old);
+                aScript2.OnMove(old);
+            }
         }
         else
         {

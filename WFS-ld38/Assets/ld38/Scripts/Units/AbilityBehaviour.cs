@@ -20,4 +20,9 @@ public class AbilityBehaviour : MonoBehaviour
     {
 
     }
+
+    public virtual void OnMove(VoronoiTile oldTile)
+    {
+
+    }
 }

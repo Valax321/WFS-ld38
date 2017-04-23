@@ -14,10 +14,8 @@
         <Element>Bytes</Element>
         <Element>Freedom Kilograms</Element>
         <Element>Kitten Souls</Element>
-        <Element>{quantity} of {noun}</Element>
       </Value>
     </Element>
-
     <Element>
       <Key>offensive</Key>
       <Value>
@@ -36,7 +34,6 @@
         <Element>Slanderous</Element>
       </Value>
     </Element>
-
     <Element>
       <Key>underwhelming</Key>
       <Value>
@@ -56,7 +53,6 @@
         <Element>Uninteresting</Element>
       </Value>
     </Element>
-
     <Element>
       <Key>citadel</Key>
       <Value>
@@ -75,6 +71,39 @@
         <Element>Statuesque</Element>
       </Value>
     </Element>
-    
+    <Element>
+      <Key>large</Key>
+      <Value>
+        <Element>Big</Element>
+        <Element>Sizable</Element>
+        <Element>Huuuuge</Element>
+        <Element>Substantial</Element>
+        <Element>Tremendous</Element>
+        <Element>Great Big</Element>
+        <Element>Titanic</Element>
+        <Element>Jumbo</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>ocean</Key>
+      <Value>
+        <Element>Saltwater</Element>
+        <Element>Oceanic</Element>
+        <Element>Liquid-Dwelling</Element>
+        <Element>Aquatic</Element>
+        <Element>Wet</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>sheep</Key>
+      <Element>Ignorant</Element>
+      <Element>Revolutionary</Element>
+      <Element>Fantastical</Element>
+      <Element>Unbelievable</Element>
+      <Element>Wonderful</Element>
+      <Element>Perfect</Element>
+      <Element>Ultimate</Element>
+      <Element>Blind</Element>
+    </Element>   
   </GroupTest>
 </NameTable>
