@@ -51,7 +51,7 @@ public class GameController : MonoBehaviour
     //[HideInInspector]
     //public Ability abilityToUse;
     [HideInInspector]
-    public int abilityToUseNum;
+    public int abilityToUseNum = -1;
     [HideInInspector]
     public UnitController unitSelected; // Selecting a unit to use ability and such
     
@@ -65,6 +65,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         GeneratePlanet(); //TEMP
+        CancelAllSelection(); // Just in case
     }
 
     void Update()
@@ -83,6 +84,11 @@ public class GameController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             RaycastHover();
+            if (lastHoveredTile != hoveredTile)
+            {
+                UpdateTileInfo();
+                lastHoveredTile = hoveredTile;
+            }
             if (Input.GetButtonDown("Fire1"))
             {
                 if (abilityToUseNum != -1)
@@ -112,16 +118,12 @@ public class GameController : MonoBehaviour
                     UpdateUnitSelected(scriptVoronoiTile);
                 }
             }
-            if (lastHoveredTile != hoveredTile)
-            {
-                UpdateTileInfo();
-                lastHoveredTile = hoveredTile;
-            }
         }
         if (Input.GetButtonDown("Fire2"))
         {
-            CancelSelection();
+            CancelAllSelection();
         }
+
         UpdateDebugInfo();
         #endregion
     }
@@ -214,8 +216,7 @@ public class GameController : MonoBehaviour
     #region DAVID
     void UpdateDebugInfo()
     {
-        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);        
-        // DEBUG DOESN'T WORK PROPERLY
+        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);
     }
 
     void RaycastHover()
@@ -274,24 +275,28 @@ public class GameController : MonoBehaviour
     {
         if (script != null)
         {
-            unitSelected = script.occupyingUnit;
-            unitSelected.shouldOutline = true;
-            abilityStartPosition = script;
-            //
-            // SHOW INFORMATION OF UNIT SELECTED?
-            //
-        }
-        else
-        {
-            unitSelected = null;
-            abilityStartPosition = null;
-            unitSelected.shouldOutline = false;
+            if (script.occupyingUnit != null)
+            {
+                unitSelected = script.occupyingUnit;
+                unitSelected.shouldOutline = true;
+                abilityStartPosition = script;
+                //
+                // SHOW INFORMATION OF UNIT SELECTED?
+                //
+            }
+            else
+            {
+                CancelAllSelection();
+                //unitSelected.shouldOutline = false;
+                //unitSelected = null;
+                //abilityStartPosition = null;
+            }
         }
     }
 
     public void SetUnitToSpawn(Unit unit)
     {
-        CancelSelection(); // Cancel other selections like ability and such
+        CancelAllSelection(); // Cancel other selections like ability and such
         unitToSpawn = unit;
     }
 
@@ -359,8 +364,13 @@ public class GameController : MonoBehaviour
     //    throw new NotImplementedException();
     //}
 
-    void CancelSelection()
+    void CancelAllSelection()
     {
+        if (unitSelected != null)
+        {
+            unitSelected.shouldOutline = false;
+            unitSelected = null;
+        }
         unitToSpawn = null;
         //abilityToUse = null;
         abilityToUseNum = -1;
