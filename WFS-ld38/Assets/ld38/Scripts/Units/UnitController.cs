@@ -27,6 +27,10 @@ public class UnitController : MonoBehaviour
 
     public Player player;
 
+    Vector3 forward;
+
+    AudioSource unitSound;
+
     void Awake()
     {
         transform.up = GetUpVector();
@@ -69,10 +73,13 @@ public class UnitController : MonoBehaviour
                 go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
 
+            unitSound = gameObject.AddComponent<AudioSource>();
+            unitSound.PlayOneShot(RandomSound(unitType.spawnSounds));
             outline = go.AddComponent<Outline>();
             outline.enabled = false;        
         }
 
+        forward = transform.forward;
         ChildUnitInit();
         StartOfTurn(); 
     }
@@ -104,7 +111,7 @@ public class UnitController : MonoBehaviour
         //    transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
         //}
 
-        transform.up = GetUpVector();
+        transform.rotation = Quaternion.LookRotation(forward, GetUpVector());    
 
         outline.enabled = shouldOutline;
     }
@@ -132,12 +139,14 @@ public class UnitController : MonoBehaviour
 
     public void MoveToTile(VoronoiTile tile)
     {
+        forward = currentTile.centerPoint - tile.centerPoint;
         if (CanMakeMove(1) && (tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
-        {
+        {            
             currentTile.occupyingUnit = null;
             currentTile = tile;
-            tile.occupyingUnit = this;
+            tile.occupyingUnit = this;            
             MakeMove(1);
+            unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
         }
         else
         {
@@ -198,5 +207,15 @@ public class UnitController : MonoBehaviour
     protected virtual void Killed()
     {
         player.RemoveUnitsFromList(this); //We've been destroyed!
+    }
+
+    AudioClip RandomSound(AudioClip[] clips)
+    {
+        if (clips.Length < 1)
+            return null;
+        else
+        {
+            return clips[Random.Range(0, clips.Length)];
+        }
     }
 }

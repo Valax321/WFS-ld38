@@ -23,6 +23,9 @@ public class Unit : ScriptableObject
 
     [Header("Unit Appearance")]
     public GameObject unitPrefab;
+    public AudioClip[] moveSounds;
+    public AudioClip[] dieSounds;
+    public AudioClip[] spawnSounds;
 
     [Header("Abilities")]
     public bool hasAbilities;

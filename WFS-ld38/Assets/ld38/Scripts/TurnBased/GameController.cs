@@ -217,6 +217,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                CancelAllSelection();
                 UpdateUnitSelected(scriptVoronoiTile);
             }
         }
@@ -315,7 +316,8 @@ public class GameController : MonoBehaviour
                 // SHOW INFORMATION OF UNIT SELECTED?
                 //
                 abilityPanel.SetActive(true);
-                abilityPanel.transform.FindChild("Move Button").gameObject.SetActive(selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator || selectedUnit.unitType.moveType != Unit.UnitType.Captial);                
+                abilityPanel.transform.FindChild("Unit Name Label").gameObject.GetComponent<Text>().text = script.occupyingUnit.unitType.unitName;
+                abilityPanel.transform.FindChild("Move Button").gameObject.SetActive((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));                
             }
             else
             {
@@ -432,6 +434,7 @@ public class GameController : MonoBehaviour
             else
             {
                 //ERROR: attack out of range!
+                abilityToUseNum = 1;
             }
 
             calculatingCanUseTargetAttack = false;
