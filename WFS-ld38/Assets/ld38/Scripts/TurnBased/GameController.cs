@@ -36,18 +36,28 @@ public class GameController : MonoBehaviour
     bool gameStarted;
 
     string currencyName;
-
-    [HideInInspector]
-    public Camera cam;
-    public GameObject unitSelected;
-    public Unit unitToSpawn; //Spawning off a Unit SO
+    
     public GameObject tileInfo;
     public Text biomeText;
     public Text currencyText;
+    public Text debugInfo;
 
+    [HideInInspector]
+    public Camera cam;
+    [HideInInspector]
+    public Unit unitToSpawn; //Spawning off a Unit SO
+    //[HideInInspector]
+    //public Ability abilityToUse;
+    [HideInInspector]
+    public int abilityToUseNum;
+    [HideInInspector]
+    public UnitController unitSelected; // Selecting a unit to use ability and such
+    
     private GameObject hoveredTile;
     private GameObject lastHoveredTile = null;
     private VoronoiTile scriptVoronoiTile;
+    private VoronoiTile abilityStartPosition;
+    // Check the range of the ability against the start of end position selected
     #endregion
 
     void Start()
@@ -73,27 +83,43 @@ public class GameController : MonoBehaviour
             RaycastHover();
             if (Input.GetButtonDown("Fire1"))
             {
-                //if (unitSelected != null)
-                //{
-                //    PlaceUnits();
-                //}
-
-                if (unitToSpawn != null)
+                if (abilityToUseNum != -1)
                 {
-                    var unit = SpawnUnitFromScriptableObject(unitToSpawn);
+                    UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile);
+                    // var ability = UseAbilityFromScriptableObject(abilityToUse);
+                    //
+                    // DO COOL ABILITY HERE
+                    //
+                }
+                else if (unitToSpawn != null)
+                {
+                    if (scriptVoronoiTile.occupyingUnit == null)
+                    {
+                        var unit = SpawnUnitFromScriptableObject(unitToSpawn);
+                    }
+                    else
+                    {
+                        //
+                        // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
+                        //
+                    }
+                }
+                else
+                {
+                    UpdateUnitSelected(scriptVoronoiTile);
                 }
             }
-            //if (Input.GetButtonDown("Fire2"))
-            //{
-            //    CancelSelection();
-            //}
             if (lastHoveredTile != hoveredTile)
             {
                 UpdateTileInfo();
                 lastHoveredTile = hoveredTile;
             }
         }
-
+        if (Input.GetButtonDown("Fire2"))
+        {
+            CancelSelection();
+        }
+        UpdateDebugInfo();
         #endregion
     }
 
@@ -183,6 +209,12 @@ public class GameController : MonoBehaviour
     }
 
     #region DAVID
+    void UpdateDebugInfo()
+    {
+        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition ? "" : abilityStartPosition.ToString(), hoveredTile, scriptVoronoiTile ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);
+        // DEBUG DOESN'T WORK PROPERLY
+    }
+
     void RaycastHover()
     {
         RaycastHit hit;
@@ -223,18 +255,52 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void SetUnitSelected(GameObject unit)
+    void UpdateUnitSelected(VoronoiTile script = null)
     {
-        unitSelected = unit;
+        if (script != null)
+        {
+            unitSelected = script.occupyingUnit;
+            abilityStartPosition = script;
+            //
+            // SHOW INFORMATION OF UNIT SELECTED?
+            //
+        }
+        else
+        {
+            unitSelected = null;
+            abilityStartPosition = null;
+        }
     }
 
-    [Obsolete("Use SpawnUnitFromScriptableObject() instead.")]
-    void PlaceUnits()
+    public void SetUnitToSpawn(Unit unit)
     {
-        Instantiate(unitSelected, scriptVoronoiTile.centerPoint, new Quaternion(0,0,0,0));
-        // THE CENTRE THAT THE SCRIPT RETURNS IN AT ALTITUDE 0
+        CancelSelection(); // Cancel other selections like ability and such
+        unitToSpawn = unit;
+    }
 
-        // DO MORE CALCULATION HERE
+    public void SetAbilitiesToUse(int abilityNum)
+    {
+        if (unitSelected != null)
+        {
+            Ability ability = abilityNum == 1 ? unitSelected.ability1 : unitSelected.ability2;
+            // Temp storage to check if the ability is targeted
+
+            if (!ability.usesTarget)
+            {
+                UseAbilityAtPosition(abilityNum);
+                //UseAbilityFromScriptableObject(ability);
+            }
+            //else
+            //{
+            //    abilityToUse = ability;
+            //}
+        }
+        else
+        {
+            //
+            // THE ABILITY PANEL SHOULDN'T SHOW UP WHEN A UNIT IS NOT SELECTED
+            //
+        }
     }
 
     GameObject SpawnUnitFromScriptableObject(Unit u)
@@ -249,9 +315,39 @@ public class GameController : MonoBehaviour
         return go;
     }
 
+    void UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
+    {
+        if (targetedPosition == null) // Not targeted
+        {
+            unitSelected.UseAbility(abilityNum == 1, abilityStartPosition);
+        }
+        else // Targeted
+        {
+            //
+            // CHECK DISTANCE
+            //
+            unitSelected.UseAbility(abilityNum == 1, targetedPosition);
+        }
+    }
+
+    //GameObject UseAbilityFromScriptableObject(Ability a)
+    //{
+    //    if (a.usesTarget)
+    //    {
+    //        a.
+    //    }
+    //    //
+    //    // NOT IMPLEMENTED
+    //    //
+    //    throw new NotImplementedException();
+    //}
+
     void CancelSelection()
     {
-        unitSelected = null;
+        unitToSpawn = null;
+        //abilityToUse = null;
+        abilityToUseNum = -1;
+        abilityStartPosition = null;
     }
 
     void UpdateTileInfo()
@@ -273,6 +369,8 @@ public class GameController : MonoBehaviour
             currencyText.text = string.Format("{0}: {1}", currencyName, 10); // PLACEHOLDER
         }
     }
+
+
     #endregion    
 }
 
