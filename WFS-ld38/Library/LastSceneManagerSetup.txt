@@ -1,1 +1,4 @@
-sceneSetups: []
+sceneSetups:
+- path: Assets/ld38/Scenes/planettest.unity
+  isLoaded: 1
+  isActive: 1
