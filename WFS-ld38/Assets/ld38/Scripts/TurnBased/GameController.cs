@@ -42,6 +42,8 @@ public class GameController : MonoBehaviour
     public Text currencyText;
     public Text debugInfo;
 
+    public GameObject tileMarker;
+
     [HideInInspector]
     public Camera cam;
     [HideInInspector]
@@ -96,6 +98,7 @@ public class GameController : MonoBehaviour
                     if (scriptVoronoiTile.occupyingUnit == null)
                     {
                         var unit = SpawnUnitFromScriptableObject(unitToSpawn);
+                        scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
                     }
                     else
                     {
@@ -211,7 +214,7 @@ public class GameController : MonoBehaviour
     #region DAVID
     void UpdateDebugInfo()
     {
-        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition ? "" : abilityStartPosition.ToString(), hoveredTile, scriptVoronoiTile ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);
+        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);        
         // DEBUG DOESN'T WORK PROPERLY
     }
 
@@ -252,7 +255,19 @@ public class GameController : MonoBehaviour
 
     void HighlightObject()
     {
-
+        if (hoveredTile != null && tileMarker != null)
+        {
+            tileMarker.SetActive(true);
+            //tileMarker.transform.position = hoveredTile.GetComponent<VoronoiTile>().centerPoint;
+            var tile = hoveredTile.GetComponent<VoronoiTile>();
+            var center = tile.centerPoint;
+            tileMarker.transform.position = Vector3.MoveTowards(tileMarker.transform.position, tile.altitude > 0 ? (center + (center - planet.transform.position) * tile.altitude) : center, 10 * Time.deltaTime);
+            tileMarker.transform.up = tileMarker.transform.position - planet.transform.position;
+        }
+        else if (hoveredTile == null && tileMarker != null)
+        {
+            tileMarker.SetActive(false);
+        }
     }
 
     void UpdateUnitSelected(VoronoiTile script = null)

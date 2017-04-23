@@ -108,17 +108,17 @@ public class UnitController : MonoBehaviour
         return transform.position - Vector3.zero;
     }
 
-    public void UseAbility(bool isAbility1)
+    public void UseAbility(bool isAbility1, VoronoiTile tile)
     {
         if (unitType.hasAbilities)
         {
             if (isAbility1)
             {
-                aScript1.Activate();
+                aScript1.Activate(tile);
             }
             else
             {
-                aScript2.Activate();
+                aScript2.Activate(tile);
             }
         }
     }
