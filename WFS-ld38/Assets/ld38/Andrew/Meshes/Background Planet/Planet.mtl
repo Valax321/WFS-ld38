@@ -1,0 +1,99 @@
+
+newmtl Ocean (Instance)
+Ka  0.4 0.4 0.4
+Kd  0 0.7058824 0.6470588
+Ks  0.0 0.0 0.0
+d  0.627451
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Hill (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.6039216 0.345098 0.2470588
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Glacier (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.7352941 1 0.9779412
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Sand (Instance)
+Ka  0.4 0.4 0.4
+Kd  1 0.9417724 0.4411765
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Sand2 (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.7720588 0.7297798 0.3689987
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Sand4 (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.4411765 0.4191085 0.2173443
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Sand3 (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.5294118 0.5023153 0.2530277
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Mountains (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.5372549 0.4784314 0.4117647
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
+
+newmtl Snow (Instance)
+Ka  0.4 0.4 0.4
+Kd  0.8431373 0.9529412 0.9529412
+Ks  0.0 0.0 0.0
+d  1
+Ns  0.0
+illum 2
+
+
+
