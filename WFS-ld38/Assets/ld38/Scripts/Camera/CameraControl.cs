@@ -28,11 +28,23 @@ public class CameraControl : MonoBehaviour {
 
             if (orbitingPlanet)
             {
-                float moveHorizontal = Input.GetAxis("Horizontal") * -1 * moveSpeed;
-                float moveVertical = Input.GetAxis("Vertical") * moveSpeed;
+                float moveHorizontal;
+                float moveVertical;
+                if (Input.GetMouseButton(2))
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    moveHorizontal = Input.GetAxis("Mouse X");
+                    moveVertical = Input.GetAxis("Mouse Y") * -1;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                    moveHorizontal = Input.GetAxis("Horizontal") * -1;
+                    moveVertical = Input.GetAxis("Vertical");
+                }
                 
-                transform.RotateAround(target.transform.position, transform.up, Time.deltaTime * moveHorizontal);
-                transform.RotateAround(target.transform.position, transform.right, Time.deltaTime * moveVertical);
+                transform.RotateAround(target.transform.position, transform.up, Time.deltaTime * moveHorizontal * moveSpeed);
+                transform.RotateAround(target.transform.position, transform.right, Time.deltaTime * moveVertical * moveSpeed);
             }
 
             if (zoomEnabled)
@@ -47,14 +59,17 @@ public class CameraControl : MonoBehaviour {
                 //{
                 //    transform.Translate(transform.forward * zoom, target.transform);
                 //}
+                float movement = 0;
 
-                if (Input.GetAxis("Zoom") < 0 && distance > zoomMin)
+                if (Input.GetAxis("Zoom") < 0 && distance> zoomMin)
                 {
-                    transform.position += transform.forward * zoomSpeed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Zoom"));
+                    movement = Mathf.Clamp(zoomSpeed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Zoom")), 0, distance - zoomMin);
+                    transform.position += transform.forward * movement;
                 }
-                else if (Input.GetAxis("Zoom") > 0 && distance < zoomMax)
+                else if (Input.GetAxis("Zoom") > 0 && distance + movement < zoomMax)
                 {
-                    transform.position -= transform.forward * zoomSpeed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Zoom"));
+                    movement = Mathf.Clamp(zoomSpeed * Time.deltaTime * Mathf.Abs(Input.GetAxis("Zoom")), 0, zoomMax - distance);
+                    transform.position -= transform.forward * movement;
                 }
             }
         }
