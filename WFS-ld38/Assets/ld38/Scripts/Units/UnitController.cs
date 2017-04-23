@@ -3,19 +3,17 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Assets;
+using cakeslice;
 
 [AddComponentMenu("Gameplay/Unit")]
 public class UnitController : MonoBehaviour
 {
-    static Color OUTLINE_COLOR = Color.blue;
-    static float OUTLINE_THICKNESS = 0.05f;
-
     protected AbilityBehaviour aScript1;
     protected AbilityBehaviour aScript2;
     public Unit unitType;
     public Ability ability1;
     public Ability ability2;
-    protected OutlineEffect outline;
+    protected Outline outline;
     public bool shouldOutline;
     public int movesThisTurn;
     bool invalid;
@@ -63,9 +61,7 @@ public class UnitController : MonoBehaviour
                 go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
 
-            outline = go.AddComponent<OutlineEffect>();
-            outline.outlineColor = OUTLINE_COLOR;
-            outline.width = OUTLINE_THICKNESS;
+            outline = go.AddComponent<Outline>();            
         }
 
         ChildUnitInit();        
@@ -73,7 +69,7 @@ public class UnitController : MonoBehaviour
 
     protected virtual void ChildUnitInit()
     {
-
+        
     }
 
     protected void GetSurroundingTiles(int depth)
@@ -98,7 +94,7 @@ public class UnitController : MonoBehaviour
 
         transform.up = GetUpVector();
 
-        outline.outlineColor = shouldOutline ? OUTLINE_COLOR : Color.black;
+        outline.enabled = shouldOutline;
     }
 
     public Vector3 GetUpVector()

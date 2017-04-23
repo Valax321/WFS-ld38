@@ -34,7 +34,7 @@ namespace Assets
         public Vector3 Normal { get {return normal;} set { normal = value; } }
 
         //GAMEPLAY
-        public Unit occupyingUnit;
+        public UnitController occupyingUnit;
 
         public void Initialize(List<Vector3> verts, bool ocean)
         {

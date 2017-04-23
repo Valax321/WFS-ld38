@@ -4,6 +4,7 @@ Shader "Outlined/Silhouette Only" {
 	Properties {
 		_OutlineColor ("Outline Color", Color) = (0,0,0,1)
 		_Outline ("Outline width", Range (0.0, 0.1)) = .005
+		_Scale ("Scale", Float) = 1.0
 	}
  
 CGINCLUDE
@@ -21,6 +22,7 @@ struct v2f {
  
 uniform float _Outline;
 uniform float4 _OutlineColor;
+uniform float _Scale;
  
 v2f vert(appdata v) {
 	// just make a copy of incoming vertex data but scaled according to normal direction
@@ -33,7 +35,7 @@ v2f vert(appdata v) {
 	float4 objectOrigin = mul(unity_ObjectToWorld, float4(0.0, 0.0, 0.0, 1.0));
 	float3 dist = _WorldSpaceCameraPos - objectOrigin.rgb;
  
-	o.pos.xy += offset * o.pos.z * _Outline * length(dist);
+	o.pos.xy += offset * o.pos.z * _Outline * _Scale;
 	o.color = _OutlineColor;
 	return o;
 }
