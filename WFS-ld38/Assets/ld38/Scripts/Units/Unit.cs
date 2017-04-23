@@ -19,7 +19,7 @@ public class Unit : ScriptableObject
     public UnitType moveType;
     public int healthMin;
     public int healthMax;
-    public int baseSpeed;
+    public int baseSpeed; //Actually moves BUT I CANT NAME THINGS PROPERLY
 
     [Header("Unit Appearance")]
     public GameObject unitPrefab;

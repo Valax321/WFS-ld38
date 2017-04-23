@@ -34,10 +34,14 @@ public class GameController : MonoBehaviour
 
     bool gameFinished;
     bool gameStarted;
+    bool calculatingCanUseTargetAttack;
+
+    bool isTryingToMoveUnit;
 
     string currencyName;
     
     public GameObject tileInfo;
+    public GameObject abilityPanel;
     public Text biomeText;
     public Text currencyText;
     public Text debugInfo;
@@ -53,7 +57,7 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public int abilityToUseNum = -1;
     [HideInInspector]
-    public UnitController unitSelected; // Selecting a unit to use ability and such
+    public UnitController selectedUnit; // Selecting a unit to use ability and such
     
     private GameObject hoveredTile;
     private GameObject lastHoveredTile = null;
@@ -80,51 +84,7 @@ public class GameController : MonoBehaviour
             GameplayUpdate();
         }
 
-        #region DAVID
-        if (!EventSystem.current.IsPointerOverGameObject())
-        {
-            RaycastHover();
-            if (lastHoveredTile != hoveredTile)
-            {
-                UpdateTileInfo();
-                lastHoveredTile = hoveredTile;
-            }
-            if (Input.GetButtonDown("Fire1"))
-            {
-                if (abilityToUseNum != -1)
-                {
-                    UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile);
-                    // var ability = UseAbilityFromScriptableObject(abilityToUse);
-                    //
-                    // DO COOL ABILITY HERE
-                    //
-                }
-                else if (unitToSpawn != null)
-                {
-                    if (scriptVoronoiTile.occupyingUnit == null)
-                    {
-                        var unit = SpawnUnitFromScriptableObject(unitToSpawn);
-                        scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
-                    }
-                    else
-                    {
-                        //
-                        // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
-                        //
-                    }
-                }
-                else
-                {
-                    UpdateUnitSelected(scriptVoronoiTile);
-                }
-            }
-        }
-        if (Input.GetButtonDown("Fire2"))
-        {
-            CancelAllSelection();
-        }
-
-        UpdateDebugInfo();
+        #region DAVID        
         #endregion
     }
 
@@ -194,6 +154,72 @@ public class GameController : MonoBehaviour
                 turnNumber++; //We've completed a whole round.
             }
         }
+
+        else
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                RaycastHover();
+                if (lastHoveredTile != hoveredTile)
+                {
+                    UpdateTileInfo();
+                    lastHoveredTile = hoveredTile;
+                }
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    HandleMouse1Down(p);                    
+                }
+            }
+            if (Input.GetButtonDown("Fire2"))
+            {
+                CancelAllSelection();
+            }
+
+            UpdateDebugInfo();
+        }
+    }
+
+    void HandleMouse1Down(Player p)
+    {
+        if (calculatingCanUseTargetAttack)
+            return; //TEMP
+
+        if (abilityToUseNum != -1)
+        {
+            isTryingToMoveUnit = false;
+            StartCoroutine(UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile));
+            return;
+        }
+        else if (unitToSpawn != null)
+        {
+            if (scriptVoronoiTile.occupyingUnit == null && scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water)
+            {
+                var unit = SpawnUnitFromScriptableObject(unitToSpawn, p);
+                scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
+                p.AddUnitToList(unit.GetComponent<UnitController>());
+            }
+            else
+            {
+                //
+                // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
+                //
+            }
+        }
+        else if (selectedUnit != null && isTryingToMoveUnit)
+        {
+            MoveSelectedUnit();
+        }
+        else
+        {
+            if (scriptVoronoiTile != null && scriptVoronoiTile.occupyingUnit != null && scriptVoronoiTile.occupyingUnit.player != p)
+            {
+                CancelAllSelection();
+            }
+            else
+            {
+                UpdateUnitSelected(scriptVoronoiTile);
+            }
+        }
     }
 
     void HandleTurn(Player p)
@@ -211,12 +237,17 @@ public class GameController : MonoBehaviour
         #region DAVID
         cam = FindObjectOfType<CameraControl>().gameObject.GetComponent<Camera>();
         #endregion
+
+        foreach (var unit in p.units)
+        {
+            unit.StartOfTurn();
+        }
     }
 
     #region DAVID
     void UpdateDebugInfo()
     {
-        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), unitSelected);
+        debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), selectedUnit);
     }
 
     void RaycastHover()
@@ -277,20 +308,26 @@ public class GameController : MonoBehaviour
         {
             if (script.occupyingUnit != null)
             {
-                unitSelected = script.occupyingUnit;
-                unitSelected.shouldOutline = true;
+                selectedUnit = script.occupyingUnit;
+                selectedUnit.shouldOutline = true;
                 abilityStartPosition = script;
                 //
                 // SHOW INFORMATION OF UNIT SELECTED?
                 //
+                abilityPanel.SetActive(true);
+                abilityPanel.transform.FindChild("Move Button").gameObject.SetActive(selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator || selectedUnit.unitType.moveType != Unit.UnitType.Captial);                
             }
             else
             {
                 CancelAllSelection();
-                //unitSelected.shouldOutline = false;
-                //unitSelected = null;
+                //selectedUnit.shouldOutline = false;
+                //selectedUnit = null;
                 //abilityStartPosition = null;
             }
+        }
+        else
+        {
+            CancelAllSelection();
         }
     }
 
@@ -300,11 +337,43 @@ public class GameController : MonoBehaviour
         unitToSpawn = unit;
     }
 
+    public void SetUnitMoveMode()
+    {
+        if (selectedUnit != null)
+        {
+            if (selectedUnit.unitType.moveType == Unit.UnitType.CurrencyGenerator || selectedUnit.unitType.moveType == Unit.UnitType.Captial)
+                return;
+
+            isTryingToMoveUnit = true;
+        }
+    }
+
+    void MoveSelectedUnit()
+    {
+        if (selectedUnit != null)
+        {
+            var surrounds = selectedUnit.currentTile.neighbors;
+            bool valid = false;
+            foreach (var tile in surrounds)
+            {
+                if (scriptVoronoiTile == tile)
+                {
+                    valid = true;
+                }
+            }
+
+            if (valid && scriptVoronoiTile.occupyingUnit == null)
+            {
+                selectedUnit.MoveToTile(scriptVoronoiTile);
+            }
+        }
+    }
+
     public void SetAbilitiesToUse(int abilityNum)
     {
-        if (unitSelected != null)
+        if (selectedUnit != null)
         {
-            Ability ability = abilityNum == 1 ? unitSelected.ability1 : unitSelected.ability2;
+            Ability ability = abilityNum == 1 ? selectedUnit.ability1 : selectedUnit.ability2;
             // Temp storage to check if the ability is targeted
 
             if (ability.range <= 0)
@@ -312,10 +381,10 @@ public class GameController : MonoBehaviour
                 UseAbilityAtPosition(abilityNum);
                 //UseAbilityFromScriptableObject(ability);
             }
-            //else
-            //{
-            //    abilityToUse = ability;
-            //}
+            else
+            {
+                abilityToUseNum = abilityNum;
+            }
         }
         else
         {
@@ -325,7 +394,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    GameObject SpawnUnitFromScriptableObject(Unit u)
+    GameObject SpawnUnitFromScriptableObject(Unit u, Player p)
     {
         var go = new GameObject(u.unitName, typeof(UnitController));
         Debug.Log(scriptVoronoiTile.altitude);
@@ -333,22 +402,39 @@ public class GameController : MonoBehaviour
         var crtl = go.GetComponent<UnitController>();
         crtl.unitType = u;
         crtl.currentTile = scriptVoronoiTile;
+        crtl.player = p;
         crtl.InitUnit();
         return go;
     }
 
-    void UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
-    {
+    IEnumerator UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
+    {        
         if (targetedPosition == null) // Not targeted
         {
-            unitSelected.UseAbility(abilityNum == 1, abilityStartPosition);
+            selectedUnit.UseAbility(abilityNum == 1, abilityStartPosition);
+            abilityToUseNum = -1;
         }
         else // Targeted
         {
-            //
-            // CHECK DISTANCE
-            //
-            unitSelected.UseAbility(abilityNum == 1, targetedPosition);
+            ThreadedSearch t = ThreadedSearch.CanMoveTo(selectedUnit.currentTile, targetedPosition, selectedUnit.GetAbility(abilityNum).range);
+            calculatingCanUseTargetAttack = true;
+
+            while (!t.isDone)
+            {
+                yield return null;
+            }
+
+            if (t.Result)
+            {
+                selectedUnit.UseAbility(abilityNum == 1, targetedPosition);
+                abilityToUseNum = -1;
+            }
+            else
+            {
+                //ERROR: attack out of range!
+            }
+
+            calculatingCanUseTargetAttack = false;
         }
     }
 
@@ -366,15 +452,17 @@ public class GameController : MonoBehaviour
 
     void CancelAllSelection()
     {
-        if (unitSelected != null)
+        if (selectedUnit != null)
         {
-            unitSelected.shouldOutline = false;
-            unitSelected = null;
+            selectedUnit.shouldOutline = false;
+            selectedUnit = null;            
         }
         unitToSpawn = null;
         //abilityToUse = null;
         abilityToUseNum = -1;
         abilityStartPosition = null;
+        isTryingToMoveUnit = false;
+        abilityPanel.SetActive(false);
     }
 
     void UpdateTileInfo()
@@ -408,6 +496,7 @@ public class Player
         number = index;
         isAI = ai;
         playerCamera = cam;
+        units = new List<UnitController>();
     }
 
     public bool hasFinishedTurn;
@@ -420,5 +509,23 @@ public class Player
     public ulong currencyPoints;
     public ulong currencyPerTurn;
     public int health;
+
+    public List<UnitController> units;
     #endregion
+
+    public void AddUnitToList(UnitController c)
+    {
+        if (!units.Contains(c))
+        {
+            units.Add(c);
+        }
+    }
+
+    public void RemoveUnitsFromList(UnitController c)
+    {
+        if (units.Contains(c))
+        {
+            units.Remove(c);
+        }
+    }
 }

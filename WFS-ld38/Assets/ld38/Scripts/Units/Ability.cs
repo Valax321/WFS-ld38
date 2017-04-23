@@ -17,6 +17,7 @@ public class Ability : ScriptableObject
     public int damageMax;
     public int currencyMin;
     public int currencyMax;
+    public int movesCost;
     public string abilityScript;
 
     private string aName;

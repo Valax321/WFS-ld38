@@ -73,7 +73,8 @@ public class UnitController : MonoBehaviour
             outline.enabled = false;        
         }
 
-        ChildUnitInit();        
+        ChildUnitInit();
+        StartOfTurn(); 
     }
 
     protected virtual void ChildUnitInit()
@@ -108,14 +109,40 @@ public class UnitController : MonoBehaviour
         outline.enabled = shouldOutline;
     }
 
+    public virtual void StartOfTurn()
+    {
+        movesThisTurn = unitType.baseSpeed;
+    }
+
     public Vector3 GetUpVector()
     {
         return transform.position - Vector3.zero;
     }
 
+    public Ability GetAbility(int num)
+    {
+        if (unitType.hasAbilities)
+        {
+            if (num == 1) return ability1;
+            else if (num == 2) return ability2;
+            else throw new System.Exception(string.Format("Invalid ability number: {0}", num));
+        }
+        else throw new System.Exception("The unit type does not have abilities!");
+    }
+
     public void MoveToTile(VoronoiTile tile)
     {
-        currentTile = tile;
+        if (CanMakeMove(1) && (tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
+        {
+            currentTile.occupyingUnit = null;
+            currentTile = tile;
+            tile.occupyingUnit = this;
+            MakeMove(1);
+        }
+        else
+        {
+            //Complain
+        }
     }
 
     public void UseAbility(bool isAbility1, VoronoiTile tile)
@@ -124,13 +151,31 @@ public class UnitController : MonoBehaviour
         {
             if (isAbility1)
             {
-                aScript1.Activate(tile);
+                if (CanMakeMove(ability1.movesCost))
+                {
+                    aScript1.Activate(tile);
+                    MakeMove(ability1.movesCost);
+                }
             }
             else
             {
-                aScript2.Activate(tile);
+                if (CanMakeMove(ability2.movesCost))
+                {
+                    aScript2.Activate(tile);
+                    MakeMove(ability2.movesCost);
+                }
             }
         }
+    }
+
+    void MakeMove(int cost)
+    {
+        movesThisTurn = Mathf.Clamp(movesThisTurn - cost, 0, unitType.baseSpeed);
+    }
+
+    public bool CanMakeMove(int cost)
+    {
+        return movesThisTurn - cost > 0;
     }
 
     public virtual void Damage(int damage)
@@ -152,6 +197,6 @@ public class UnitController : MonoBehaviour
 
     protected virtual void Killed()
     {
-
+        player.RemoveUnitsFromList(this); //We've been destroyed!
     }
 }
