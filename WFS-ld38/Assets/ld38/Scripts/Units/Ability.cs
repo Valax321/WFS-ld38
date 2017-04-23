@@ -6,6 +6,7 @@ using UnityEngine;
 public class Ability : ScriptableObject
 {
     public string nameKey; //can use formatters e.g. {prefix} of {someother tag}
+    public string description;
     //public Sprite sprite;
     //public AudioClip sound;
     public int range;

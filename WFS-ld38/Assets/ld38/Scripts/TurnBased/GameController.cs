@@ -39,11 +39,6 @@ public class GameController : MonoBehaviour
     bool isTryingToMoveUnit;
 
     string currencyName;
-    
-    public GameObject tileInfo;
-    public GameObject abilityPanel;
-    public Text biomeText;
-    public Text currencyText;
     public Text debugInfo;
 
     public GameObject tileMarker;
@@ -172,7 +167,10 @@ public class GameController : MonoBehaviour
             }
             if (Input.GetButtonDown("Fire2"))
             {
-                CancelAllSelection();
+                if (!EventSystem.current.IsPointerOverGameObject())
+                {
+                    CancelAllSelection();
+                }
             }
 
             UpdateDebugInfo();
@@ -239,6 +237,7 @@ public class GameController : MonoBehaviour
         cam = FindObjectOfType<CameraControl>().gameObject.GetComponent<Camera>();
         #endregion
 
+        UIController.instance.UpdateDescriptionEnabled(false);
         foreach (var unit in p.units)
         {
             unit.StartOfTurn();
@@ -260,15 +259,13 @@ public class GameController : MonoBehaviour
             if (hit.transform != null)
             {
                 hoveredTile = hit.transform.gameObject;
-                HighlightObject();
-                // ^^^^
-                // NOT DONE
-                //
             }
             else
             {
                 hoveredTile = null;
             }
+
+            HighlightObject();
         }
     }
 
@@ -290,15 +287,26 @@ public class GameController : MonoBehaviour
     {
         if (hoveredTile != null && tileMarker != null)
         {
+            UIController.instance.UpdateInfoPanelEnabled(true);
             tileMarker.SetActive(true);
             //tileMarker.transform.position = hoveredTile.GetComponent<VoronoiTile>().centerPoint;
             var tile = hoveredTile.GetComponent<VoronoiTile>();
             var center = tile.centerPoint;
             tileMarker.transform.position = Vector3.MoveTowards(tileMarker.transform.position, tile.altitude > 0 ? (center + (center - planet.transform.position) * tile.altitude) : center, 10 * Time.deltaTime);
             tileMarker.transform.up = tileMarker.transform.position - planet.transform.position;
+
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                UIController.instance.UpdateDescriptionEnabled(tile.occupyingUnit != null);
+                if (tile.occupyingUnit != null)
+                {
+                    UIController.instance.UpdateDescription(tile.occupyingUnit.unitType.unitName, tile.occupyingUnit.unitType.description);
+                }
+            }
         }
         else if (hoveredTile == null && tileMarker != null)
         {
+            UIController.instance.UpdateInfoPanelEnabled(false);
             tileMarker.SetActive(false);
         }
     }
@@ -315,9 +323,19 @@ public class GameController : MonoBehaviour
                 //
                 // SHOW INFORMATION OF UNIT SELECTED?
                 //
-                abilityPanel.SetActive(true);
-                abilityPanel.transform.FindChild("Unit Name Label").gameObject.GetComponent<Text>().text = script.occupyingUnit.unitType.unitName;
-                abilityPanel.transform.FindChild("Move Button").gameObject.SetActive((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));                
+                UIController.instance.UpdateAbilityPanelEnabled(true);
+                UIController.instance.UpdateAbilityPanelName(script.occupyingUnit.unitType.unitName);
+                bool ab = selectedUnit.unitType.hasAbilities;
+                UIController.instance.UpdateAbility1Enabled(ab);
+                UIController.instance.UpdateAbility2Enabled(ab);
+
+                if (ab)
+                {
+                    UIController.instance.UpdateAbility1Name(selectedUnit.ability1.abilityName);
+                    UIController.instance.UpdateAbility2Name(selectedUnit.ability2.abilityName);
+                }
+
+                UIController.instance.UpdateMoveButtonEnabled((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));           
             }
             else
             {
@@ -396,6 +414,22 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void SetAbilityDescription(int abilityNum)
+    {
+        if (abilityNum == -1)
+        {
+            UIController.instance.UpdateDescriptionEnabled(false);
+            return;
+        }
+
+        if (selectedUnit != null)
+        {
+            Ability ability = abilityNum == 1 ? selectedUnit.ability1 : selectedUnit.ability2;
+            UIController.instance.UpdateDescriptionEnabled(true);
+            UIController.instance.UpdateDescription(ability.abilityName, ability.description);
+        }
+    }
+
     GameObject SpawnUnitFromScriptableObject(Unit u, Player p)
     {
         var go = new GameObject(u.unitName, typeof(UnitController));
@@ -465,7 +499,7 @@ public class GameController : MonoBehaviour
         abilityToUseNum = -1;
         abilityStartPosition = null;
         isTryingToMoveUnit = false;
-        abilityPanel.SetActive(false);
+        UIController.instance.UpdateAbilityPanelEnabled(false);
     }
 
     void UpdateTileInfo()
@@ -474,17 +508,20 @@ public class GameController : MonoBehaviour
         {
             // NOT WORKING
             scriptVoronoiTile = null;
-            CloseUI(tileInfo);
+            UIController.instance.UpdateInfoPanelEnabled(false);
+            //CloseUI(tileInfo);
         }
         else
         {
             if (lastHoveredTile == null)
             {
-                OpenUI(tileInfo);
+                UIController.instance.UpdateInfoPanelEnabled(true);
+                //OpenUI(tileInfo);
             }
             scriptVoronoiTile = hoveredTile.GetComponent<VoronoiTile>();
-            biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.baseBiome);
-            currencyText.text = string.Format("{0}: {1}", currencyName, scriptVoronoiTile.currency); // PLACEHOLDER
+            UIController.instance.UpdateInfoBiome(scriptVoronoiTile.baseBiome);
+            UIController.instance.UpdateInfoCurrencyValue(currencyName, scriptVoronoiTile.currency);
+            //currencyText.text = string.Format("{0}: {1}", currencyName, scriptVoronoiTile.currency); // PLACEHOLDER
         }
     }
 

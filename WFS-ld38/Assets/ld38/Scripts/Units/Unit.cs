@@ -16,6 +16,7 @@ public class Unit : ScriptableObject
 
     [Header("Unit Properties")]
     public string nameKey; //can use formatters e.g. {prefix} of {someother tag}
+    public string description;
     public UnitType moveType;
     public int healthMin;
     public int healthMax;

@@ -79,7 +79,7 @@ public class UnitController : MonoBehaviour
             outline.enabled = false;        
         }
 
-        forward = transform.forward;
+        forward = Vector3.ProjectOnPlane(transform.forward, GetUpVector());
         ChildUnitInit();
         StartOfTurn(); 
     }
