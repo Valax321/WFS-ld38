@@ -34,7 +34,7 @@ namespace Assets
         public Vector3 Normal { get { return normal; } set { normal = value; } }
 
         //GAMEPLAY
-        public int currency = new List<int>() {0,0,0,0,0,1,2,3,4,5}[Mathf.FloorToInt(UnityEngine.Random.Range(0, 10))];
+        public int currency = 0;
         public UnitController occupyingUnit;
 
         static List<VoronoiTile> searchedTiles = new List<VoronoiTile>();
@@ -94,6 +94,9 @@ namespace Assets
             tileMesh = new Mesh();
             vertices = verts;
             plate = -1;
+            int _currency = Mathf.FloorToInt(UnityEngine.Random.Range(0, 10));
+            currency = _currency > 5 ? 0 : _currency;
+            
 
             // find centerpoint
             centerPoint = CenterPoint(vertices);

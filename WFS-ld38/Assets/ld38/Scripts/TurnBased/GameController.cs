@@ -484,7 +484,7 @@ public class GameController : MonoBehaviour
             }
             scriptVoronoiTile = hoveredTile.GetComponent<VoronoiTile>();
             biomeText.text = string.Format("Biome: {0}", scriptVoronoiTile.baseBiome);
-            currencyText.text = string.Format("{0}: {1}", currencyName, 10); // PLACEHOLDER
+            currencyText.text = string.Format("{0}: {1}", currencyName, scriptVoronoiTile.currency);
         }
     }
 
