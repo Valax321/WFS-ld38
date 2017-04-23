@@ -275,6 +275,7 @@ public class GameController : MonoBehaviour
         if (script != null)
         {
             unitSelected = script.occupyingUnit;
+            unitSelected.shouldOutline = true;
             abilityStartPosition = script;
             //
             // SHOW INFORMATION OF UNIT SELECTED?
@@ -284,6 +285,7 @@ public class GameController : MonoBehaviour
         {
             unitSelected = null;
             abilityStartPosition = null;
+            unitSelected.shouldOutline = false;
         }
     }
 
