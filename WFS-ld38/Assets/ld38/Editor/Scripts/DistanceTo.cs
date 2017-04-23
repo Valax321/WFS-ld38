@@ -17,6 +17,8 @@ public class DistanceTo : EditorWindow
     VoronoiTile target;
     int depth;
     bool success;
+    bool working;
+    ThreadedSearch search;
 
     void OnGUI()
     {
@@ -25,8 +27,26 @@ public class DistanceTo : EditorWindow
         depth = EditorGUILayout.IntSlider("Search Depth", depth, 1, 5);
         if (GUILayout.Button("Calculate!"))
         {
-            success = VoronoiTile.CanMoveTo(start, target, depth);
+            if (search == null)
+            {
+                search = ThreadedSearch.CanMoveTo(start, target, depth);
+                working = true;
+            }
         }
+
+        if (!working && search != null)
+        {
+            if (!search.isDone) return;
+
+            success = search.Result;
+            search = null;
+        }
+
+        if (search != null)
+        {
+            working = !search.isDone;
+        }
+
         EditorGUILayout.LabelField(string.Format("Successfully found: {0}", success));
     }
 }

@@ -307,7 +307,7 @@ public class GameController : MonoBehaviour
             Ability ability = abilityNum == 1 ? unitSelected.ability1 : unitSelected.ability2;
             // Temp storage to check if the ability is targeted
 
-            if (!ability.usesTarget)
+            if (ability.range <= 0)
             {
                 UseAbilityAtPosition(abilityNum);
                 //UseAbilityFromScriptableObject(ability);
