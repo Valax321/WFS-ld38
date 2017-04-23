@@ -24,6 +24,11 @@ public class UnitController : MonoBehaviour
 
     public Player player;
 
+    void Awake()
+    {
+        transform.up = GetUpVector();
+    }
+
     public void InitUnit()
     {
         if (unitType.hasAbilities)
@@ -61,7 +66,8 @@ public class UnitController : MonoBehaviour
                 go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
 
-            outline = go.AddComponent<Outline>();            
+            outline = go.AddComponent<Outline>();
+            outline.enabled = false;        
         }
 
         ChildUnitInit();        
