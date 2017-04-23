@@ -21,7 +21,7 @@ namespace Assets
         public int plate;
         public bool sand = false;
         public bool rock = false;
-        
+
         // PROPRETIES
         public float humidity = -1;
         public float temperature = -1;
@@ -31,9 +31,10 @@ namespace Assets
 
         private bool test = false;
 
-        public Vector3 Normal { get {return normal;} set { normal = value; } }
+        public Vector3 Normal { get { return normal; } set { normal = value; } }
 
         //GAMEPLAY
+        public int currency = new List<int>() {0,0,0,0,0,1,2,3,4,5}[Mathf.FloorToInt(UnityEngine.Random.Range(0, 10))];
         public UnitController occupyingUnit;
 
         static List<VoronoiTile> searchedTiles = new List<VoronoiTile>();
