@@ -264,5 +264,30 @@
         <Element>Hungry</Element>
       </Value>
     </Element>
+    <Element>
+      <Key>mine</Key>
+      <Value>
+        <Element>Oily</Element>
+        <Element>Noisy</Element>
+        <Element>Industrial</Element>
+        <Element>Unmanned</Element>
+        <Element>Mechanical</Element>
+        <Element>Vaguely Steampunk</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>generator</Key>
+      <Value>
+        <Element>Mine</Element>
+        <Element>Factory</Element>
+        <Element>Oil Well</Element>
+        <Element>Oil Rig</Element>
+        <Element>Generator</Element>
+        <Element>Plant</Element>
+        <Element>Production Line</Element>
+        <Element>Means of Production</Element>
+        <Element>Facility</Element>
+      </Value>
+    </Element>
   </GroupTest>
 </NameTable>
