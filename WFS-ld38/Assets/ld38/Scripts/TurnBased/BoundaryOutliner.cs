@@ -19,6 +19,7 @@ public class BoundaryOutliner : MonoBehaviour
         {
             List<Vector3> positions = new List<Vector3>();
             positions.AddRange(tiles.Select(x => x.centerPoint));
+            line.numPositions = tiles.Count;
             line.SetPositions(positions.ToArray());
         }
     }
