@@ -137,6 +137,13 @@ public class UnitController : MonoBehaviour
         }
 
         forward = Vector3.ProjectOnPlane(transform.forward, GetUpVector());
+
+        if (visibleSpecial != null)
+        {
+            visibleSpecial.SetActive(currentTile.baseBiome == VoronoiTile.Biomes.Water);
+            visibleObject.SetActive(currentTile.baseBiome != VoronoiTile.Biomes.Water);
+        }
+
         ChildUnitInit();
         StartOfTurn(); 
     }

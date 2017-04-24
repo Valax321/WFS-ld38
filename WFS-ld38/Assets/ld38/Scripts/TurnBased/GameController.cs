@@ -76,7 +76,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         audio = GetComponent<AudioSource>();
-        GeneratePlanet(); //TEMP
+        //GeneratePlanet(); //TEMP
         CancelAllSelection(); // Just in case
         isPaused = false;
     }
