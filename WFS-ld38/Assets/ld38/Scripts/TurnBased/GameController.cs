@@ -485,28 +485,35 @@ public class GameController : MonoBehaviour
         }
         else // Targeted
         {
-            ThreadedSearch t = ThreadedSearch.CanMoveTo(selectedUnit.currentTile, targetedPosition, selectedUnit.GetAbility(abilityNum).range);
-            calculatingCanUseTargetAttack = true;
+            //ThreadedSearch t = ThreadedSearch.CanMoveTo(selectedUnit.currentTile, targetedPosition, selectedUnit.GetAbility(abilityNum).range);
 
-            while (!t.isDone)
-            {
-                yield return null;
-            }
+            //calculatingCanUseTargetAttack = true;
 
-            if (t.Result)
-            {
-                selectedUnit.UseAbility(abilityNum == 1, targetedPosition);
-                abilityToUseNum = -1;
-            }
-            else
-            {
-                //ERROR: attack out of range!
-                abilityToUseNum = abilityNum;
-                PlayNoSound();
-            }
+            //while (!t.isDone)
+            //{
+            //    yield return null;
+            //}
 
-            calculatingCanUseTargetAttack = false;
+            //if (t.Result)
+            //{
+            //    selectedUnit.UseAbility(abilityNum == 1, targetedPosition);
+            //    abilityToUseNum = -1;
+            //}
+            //else
+            //{
+            //    //ERROR: attack out of range!
+            //    abilityToUseNum = abilityNum;
+            //    PlayNoSound();
+            //}
+
+            //calculatingCanUseTargetAttack = false;
+
+
+
+            // NEEDS TO BE REDONE
+
         }
+        yield return null; // REMOVE THIS LATER
     }
 
     //GameObject UseAbilityFromScriptableObject(Ability a)

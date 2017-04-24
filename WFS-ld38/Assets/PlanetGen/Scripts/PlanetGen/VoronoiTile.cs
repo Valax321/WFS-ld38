@@ -37,45 +37,90 @@ namespace Assets
         public int currency = 0;
         public UnitController occupyingUnit;
 
-        static List<VoronoiTile> searchedTiles = new List<VoronoiTile>();
+        //static List<VoronoiTile> searchedTiles = new List<VoronoiTile>();
+        private static List<List<VoronoiTile>> searchedTiles = new List<List<VoronoiTile>>();
+        //private static float beginSearchTime = 0.0f; // Record loop time
+        private static System.Diagnostics.Stopwatch stopwatch;
 
-        public static bool CanMoveTo(VoronoiTile start, VoronoiTile target, int maxDist)
+        //public static bool CanMoveTo(VoronoiTile start, VoronoiTile target, int maxDist)
+        //{
+        //    searchedTiles.Clear();
+        //    return CanMoveToInternal(start, target, maxDist);
+        //}
+
+        public static List<List<VoronoiTile>> FindTilesInRange(VoronoiTile tile, int range)
         {
+            stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             searchedTiles.Clear();
-            return CanMoveToInternal(start, target, maxDist);
+            //beginSearchTime = Time.time;
+            searchedTiles.Add(new List<VoronoiTile>() { tile });
+            FindTilesInRangeInternal(range, 0);
+            stopwatch.Stop();
+            Debug.LogErrorFormat("Search ended, time take: {0}", stopwatch.Elapsed);
+            for (int i = 0; i < searchedTiles.Count; i++)
+            {
+                Debug.LogWarningFormat("Range: {0}", i);
+                for (int j = 0; j < searchedTiles[i].Count; j++)
+                {
+                    Debug.LogFormat("Tile Position: {0}", searchedTiles[i][j].centerPoint);
+                }
+            }
+            return searchedTiles;
         }
 
-        static bool CanMoveToInternal(VoronoiTile start, VoronoiTile target, int maxDist)
+        static void FindTilesInRangeInternal(int range, int index)
         {
-            if (maxDist == 0) return false;
-
-            Debug.LogFormat("Searching depth {0}", maxDist);
-
-            var tiles = start.neighbors;
-            int i = tiles.Count;
-            Debug.LogFormat("Tile count: {0}", i);
-            foreach (var tile in tiles)
+            List<VoronoiTile> tempList = new List<VoronoiTile>();
+            foreach (VoronoiTile sT in searchedTiles[index])
             {
-                if (tile == start) continue;
-                if (searchedTiles.Contains(tile)) continue;
-
-                searchedTiles.Add(tile);
-                if (tile == target)
+                foreach (VoronoiTile neighourT in sT.neighbors)
                 {
-                    Debug.LogFormat("Found at depth {0}", maxDist);
-                    return true;
-                }       
-                else
-                {
-                    if (CanMoveTo(tile, target, maxDist - 1))
+                    if (!searchedTiles[index].Contains(neighourT) && !searchedTiles[Mathf.Clamp(index - 1, 0, 1)].Contains(neighourT) && !tempList.Contains(neighourT))
                     {
-                        return true;
+                        tempList.Add(neighourT);
                     }
                 }
             }
+            Debug.LogWarningFormat("Searched index: {0}, Time {1}", index, stopwatch.Elapsed);
+            searchedTiles.Add(tempList);
+            if (range > index + 1)
+            {
+                FindTilesInRangeInternal(range, index + 1);
+            }
+        }
 
-            return false;
-        }   
+        //static bool CanMoveToInternal(VoronoiTile start, VoronoiTile target, int maxDist)
+        //{
+        //    if (maxDist == 0) return false;
+
+        //    Debug.LogFormat("Searching depth {0}", maxDist);
+
+        //    var tiles = start.neighbors;
+        //    int i = tiles.Count;
+        //    Debug.LogFormat("Tile count: {0}", i);
+        //    foreach (var tile in tiles)
+        //    {
+        //        if (tile == start) continue;
+        //        if (searchedTiles.Contains(tile)) continue;
+
+        //        searchedTiles.Add(tile);
+        //        if (tile == target)
+        //        {
+        //            Debug.LogFormat("Found at depth {0}", maxDist);
+        //            return true;
+        //        }       
+        //        else
+        //        {
+        //            if (CanMoveTo(tile, target, maxDist - 1))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //    }
+
+        //    return false;
+        //}   
 
         public static bool CheckSurrounding(VoronoiTile a, VoronoiTile b)
         {
