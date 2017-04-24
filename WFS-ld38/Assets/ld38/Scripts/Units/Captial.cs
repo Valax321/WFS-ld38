@@ -14,11 +14,11 @@ public class Captial : UnitController
 
     }
 
-    public override void Damage(int damage)
+    public override bool Damage(int damage)
     {
-        base.Damage(damage);
-
+        bool killed = base.Damage(damage);
         player.health = health;
+        return killed;
     }
 
     public override void Killed()
