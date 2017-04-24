@@ -21,6 +21,8 @@ public class UnitController : MonoBehaviour
     public int movesThisTurn;
     bool invalid;
 
+    public GameObject visibleObject;
+
     public int health;
 
     public VoronoiTile currentTile { get; set; }
@@ -29,7 +31,7 @@ public class UnitController : MonoBehaviour
 
     Vector3 forward;
 
-    AudioSource unitSound;
+    public AudioSource unitSound;
 
     void Awake()
     {
@@ -64,19 +66,19 @@ public class UnitController : MonoBehaviour
 
         if (!invalid)
         {            
-            var go = Instantiate(unitType.unitPrefab);
-            go.transform.SetParent(transform, false);
+            visibleObject = Instantiate(unitType.unitPrefab);
+            visibleObject.transform.SetParent(transform, false);
             health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
 
             if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
             {
-                go.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
+                visibleObject.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
             }
 
             unitSound = gameObject.AddComponent<AudioSource>();
             unitSound.spatialBlend = 1;
             unitSound.PlayOneShot(RandomSound(unitType.spawnSounds));
-            outline = go.AddComponent<Outline>();
+            outline = visibleObject.AddComponent<Outline>();
             outline.enabled = false;        
         }
 
@@ -203,7 +205,7 @@ public class UnitController : MonoBehaviour
     {
         if (other.unitType.hasAbilities)
         {
-            int a1 = Random.Range(0.0f, 1.0f) > 0.5f ? 1 : 0;
+            int a1 = Random.Range(0.0f, 1.0f) > 0.5f ? 1 : 2;
 
             var a = other.GetAbility(a1);
             if (a1 == 1)
@@ -268,6 +270,12 @@ public class UnitController : MonoBehaviour
 
     public virtual void Killed()
     {
+        if (unitType.hasAbilities)
+        {
+            aScript1.OnDeath();
+            aScript2.OnDeath();
+        }
+
         Debug.LogFormat("{0} destroyed!", unitType.unitName);
         player.RemoveUnitsFromList(this); //We've been destroyed!
         currentTile.occupyingUnit = null;

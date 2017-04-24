@@ -50,10 +50,10 @@ public class SpawnCapital : MonoBehaviour {
             tile = plate.transform.GetChild(Mathf.FloorToInt(Random.Range(0, plate.transform.childCount))).gameObject.GetComponent<VoronoiTile>();
         } while (tile.occupyingUnit != null);
 
-        var go = new GameObject(unit.unitName, typeof(UnitController));
+        var go = new GameObject(unit.unitName, typeof(Captial));
         Debug.Log(tile.altitude);
         go.transform.position = tile.centerPoint;
-        var crtl = go.GetComponent<UnitController>();
+        var crtl = go.GetComponent<Captial>();
         crtl.unitType = unit;
         crtl.currentTile = tile;
         crtl.InitUnit();

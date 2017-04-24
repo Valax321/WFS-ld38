@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class Captial : UnitController
 {
-    protected override void BaseUpdate()
-    {
-        base.BaseUpdate();        
-    }
-
     protected override void ChildUnitInit()
     {
-
+        Debug.LogFormat("Setting player HP to {0}", health);
+        player.health = health;
     }
 
     public override bool Damage(int damage)
@@ -24,5 +20,6 @@ public class Captial : UnitController
     public override void Killed()
     {
         base.Killed();
+        //Set a game over.
     }
 }

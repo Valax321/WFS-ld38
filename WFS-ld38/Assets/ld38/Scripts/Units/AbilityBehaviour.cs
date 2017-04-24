@@ -30,4 +30,9 @@ public class AbilityBehaviour : MonoBehaviour
     {
 
     }
+
+    public virtual void OnDeath()
+    {
+
+    }
 }

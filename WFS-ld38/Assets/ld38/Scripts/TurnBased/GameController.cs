@@ -282,6 +282,7 @@ public class GameController : MonoBehaviour
         }
 
         UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
+        UIController.instance.UpdateHP(p.health);
     }
 
     #region DAVID
@@ -537,6 +538,7 @@ public class GameController : MonoBehaviour
             {
                 selectedUnit.UseAbility(abilityNum == 1, targetedPosition);
                 abilityToUseNum = -1;
+                CancelAllSelection();
             }
             else
             {
@@ -651,7 +653,7 @@ public class Player
         playerColor = colors[Mathf.Clamp(index, 0, 8)];
 
         playerCamera.GetComponent<OutlineEffect>().lineColor0 = playerColor;
-    }
+    }    
 
     public bool hasFinishedTurn;
     public bool hasPlayedThisTurn;
