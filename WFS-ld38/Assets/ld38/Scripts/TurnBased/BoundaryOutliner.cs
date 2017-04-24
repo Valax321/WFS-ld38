@@ -16,7 +16,16 @@ public class BoundaryOutliner : MonoBehaviour
 
     public void MakeBoundary(List<VoronoiTile> tilesList)
     {
-        List<VoronoiTile> tiles = SortList(tilesList);
+        List<VoronoiTile> tiles;
+        try
+        {
+            tiles = SortList(tilesList);
+        }
+        catch
+        {
+            tiles = tilesList;
+        }
+
         if (line != null)
         {
             List<Vector3> positions = new List<Vector3>();

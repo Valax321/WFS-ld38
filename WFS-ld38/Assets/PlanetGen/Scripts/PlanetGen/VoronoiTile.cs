@@ -57,13 +57,13 @@ namespace Assets
             searchedTiles.Add(new List<VoronoiTile>() { tile });
             FindTilesInRangeInternal(range, 0);
             stopwatch.Stop();
-            Debug.LogErrorFormat("Search ended, time take: {0}", stopwatch.Elapsed);
+            //Debug.LogErrorFormat("Search ended, time take: {0}", stopwatch.Elapsed);
             for (int i = 0; i < searchedTiles.Count; i++)
             {
-                Debug.LogWarningFormat("Range: {0}", i);
+                //Debug.LogWarningFormat("Range: {0}", i);
                 for (int j = 0; j < searchedTiles[i].Count; j++)
                 {
-                    Debug.LogFormat("Tile Position: {0}", searchedTiles[i][j].centerPoint);
+                    //Debug.LogFormat("Tile Position: {0}", searchedTiles[i][j].centerPoint);
                 }
             }
             return searchedTiles;
@@ -82,7 +82,7 @@ namespace Assets
                     }
                 }
             }
-            Debug.LogWarningFormat("Searched index: {0}, Time {1}, Count {2}", index, stopwatch.Elapsed, tempList.Count);
+            //Debug.LogWarningFormat("Searched index: {0}, Time {1}, Count {2}", index, stopwatch.Elapsed, tempList.Count);
             searchedTiles.Add(tempList);
             if (range > index + 1)
             {
