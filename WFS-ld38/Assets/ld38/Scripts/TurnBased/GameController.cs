@@ -610,7 +610,7 @@ public class GameController : MonoBehaviour
         audio.PlayOneShot(noSound);
     }
 
-    void CancelAllSelection(bool playSound = false)
+    public void CancelAllSelection(bool playSound = false)
     {
         if (playSound)
         {

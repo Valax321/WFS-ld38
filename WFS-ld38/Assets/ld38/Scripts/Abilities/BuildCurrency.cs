@@ -26,6 +26,7 @@ public class BuildCurrency : AbilityBehaviour
             owner.moveSpeedMultiplier = 0;
             tile.occupyingUnit = owner;
             buildTile = tile;
+            hasBuilt = true;
         }
     }
 
@@ -40,10 +41,16 @@ public class BuildCurrency : AbilityBehaviour
                 hasBuilt = false;
                 buildTurns = 0;
                 //Build it!
-
-                var go = new GameObject("Generated Mine", typeof(CurrencyGenerator));
+                Debug.Log("Building...");
+                var go = new GameObject(spawnUnit.unitName, typeof(CurrencyGenerator));
                 var gen = go.GetComponent<CurrencyGenerator>();
-
+                go.transform.position = buildTile.centerPoint;
+                gen.unitType = spawnUnit;
+                gen.currentTile = buildTile;
+                gen.player = owner.player;
+                gen.InitUnit();
+                buildTile.occupyingUnit = gen;
+                owner.player.AddUnitToList(gen);
             }
             else
             {
