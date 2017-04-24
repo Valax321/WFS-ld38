@@ -17,18 +17,29 @@ public class MainMenu : MonoBehaviour
     public Generate planet;
     public GameController controller;
     public GameObject ui;
+    public GameObject menu;
+    public GameObject loadText;
 
     public void UpdateSlider(float players)
     {
         sliderText.text = string.Format(SliderString, (int)players);
     }
 
+    IEnumerator UI()
+    {
+        menu.SetActive(false);
+        loadText.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        controller.GeneratePlanet();
+        yield return new WaitForSeconds(0.5f);
+        loadText.SetActive(false);
+        ui.SetActive(true);
+    }
+
     public void StartClicked()
     {
         int players = Mathf.Clamp((int)playerSlider.value, 2, 8);
         controller.numPlayers = players;
-        ui.SetActive(true);
-        gameObject.SetActive(false);
-        controller.GeneratePlanet();
+        StartCoroutine(UI());
     }
 }

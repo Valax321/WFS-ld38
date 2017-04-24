@@ -372,7 +372,7 @@ public class UnitController : MonoBehaviour
         }
         else if (damage < 0)
         {
-
+            UIController.instance.PushNotification(string.Format("{0} healed {1} HP!", unitType.unitName, -damage));
         }
 
         if (health <= 0)
@@ -398,6 +398,8 @@ public class UnitController : MonoBehaviour
             aScript1.OnDeath();
             aScript2.OnDeath();
         }
+
+        UIController.instance.PushNotification(string.Format("{0} destroyed!", unitType.unitName));
 
         Debug.LogFormat("{0} destroyed!", unitType.unitName);
         player.RemoveUnitsFromList(this); //We've been destroyed!
