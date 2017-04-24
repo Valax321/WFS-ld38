@@ -214,6 +214,8 @@ public class GameController : MonoBehaviour
 
         }
         UpdateDebugInfo();
+
+        UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
     }
 
     void HandleMouse1Down(Player p)
@@ -751,7 +753,7 @@ public class Player
 
     public void AddCurrency(long add)
     {
-        currency += add;
+        currency += add;        
     }
 
     public void AddCurrencyPerTurn(long add)

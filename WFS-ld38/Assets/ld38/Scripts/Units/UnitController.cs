@@ -90,7 +90,7 @@ public class UnitController : MonoBehaviour
                 {
                     ability2 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
                 }
-                while (ability2 != ability1);
+                while (ability2 == ability1);
             }
             else
             {
