@@ -31,6 +31,7 @@ public class Unit : ScriptableObject
 
     [Header("Abilities")]
     public bool hasAbilities;
+    public AbilityPool abilityPool;
     public Ability ability1;
     public Ability ability2;
 

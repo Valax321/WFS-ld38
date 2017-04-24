@@ -84,6 +84,7 @@ public class UnitController : MonoBehaviour
         {
             if (unitType.nameKey != "Resource Man")
             {
+                abilityPool = unitType.abilityPool;
                 ability1 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
                 do
                 {
