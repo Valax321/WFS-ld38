@@ -13,14 +13,17 @@ public class UIController : MonoBehaviour
     const string DescriptionString = "Help: {0}";
     const string BiomeString = "Biome: {0}";
     const string TileCurrencyString = "{0}: {1}";
-    const string UnitAbilityPanelString = "{0} ({1} moves left)";
+    const string UnitAbilityPanelString = "{0}\n({1} moves left)";
 
     public GameObject topBar;
     public GameObject historyPanel;
     public GameObject createPanel;
     public GameObject descriptionPanel;
     public GameObject abilityPanel;
+    public GameObject abilityLayoutGroup;
     public GameObject tileInfo;
+    public GameObject mainScreen;
+    public GameObject pauseScreen;
 
     public static UIController instance { get { return uiInstance; } }
     static UIController uiInstance;
@@ -117,7 +120,7 @@ public class UIController : MonoBehaviour
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Ability 1").GetComponentInChildren<Text>().text = name;
+            abilityLayoutGroup.transform.FindChild("Ability 1").GetComponentInChildren<Text>().text = name;
         }
     }
 
@@ -125,7 +128,7 @@ public class UIController : MonoBehaviour
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Ability 1").gameObject.SetActive(enabled);
+            abilityLayoutGroup.transform.FindChild("Ability 1").gameObject.SetActive(enabled);
         }
     }
 
@@ -133,7 +136,7 @@ public class UIController : MonoBehaviour
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Ability 2").GetComponentInChildren<Text>().text = name;
+            abilityLayoutGroup.transform.FindChild("Ability 2").GetComponentInChildren<Text>().text = name;
         }
     }
 
@@ -141,7 +144,7 @@ public class UIController : MonoBehaviour
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Ability 2").gameObject.SetActive(enabled);
+            abilityLayoutGroup.transform.FindChild("Ability 2").gameObject.SetActive(enabled);
         }
     }
 
@@ -149,7 +152,13 @@ public class UIController : MonoBehaviour
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Move Button").gameObject.SetActive(enabled);
+            abilityLayoutGroup.transform.FindChild("Move Button").gameObject.SetActive(enabled);
         }
+    }
+
+    public void UpdatePause(bool isPaused)
+    {
+        pauseScreen.SetActive(isPaused);
+        mainScreen.SetActive(!isPaused);
     }
 }
