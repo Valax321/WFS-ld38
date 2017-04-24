@@ -13,7 +13,7 @@ public class AbilityBehaviour : MonoBehaviour
 
     public virtual void Activate(VoronoiTile tile)
     {
-        Debug.LogFormat("{0} activated!", ourAbility.abilityName);
+        UIController.instance.PushNotification(string.Format("{0} used {1}!", owner.unitType.unitName, ourAbility.abilityName));
     }
 
     public virtual void OnTurn()

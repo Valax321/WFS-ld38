@@ -18,6 +18,7 @@ public class HealBomb : AbilityBehaviour
         if (shouldHeal)
         {
             //Already healing, complain.
+            UIController.instance.PushNotification("Unit is already healing.");
             return;
         }
 

@@ -465,6 +465,7 @@ public class GameController : MonoBehaviour
             else
             {
                 PlayNoSound();
+                UIController.instance.PushNotification("Cannot move unit here.");
             }
         }
     }
@@ -655,24 +656,30 @@ public class GameController : MonoBehaviour
 
     public void CancelAllSelection(bool playSound = false)
     {
-        if (playSound)
+        try
         {
-            audio.PlayOneShot(deselectSound);
-        }
+            if (playSound)
+            {
+                audio.PlayOneShot(deselectSound);
+            }
 
-        if (selectedUnit != null)
-        {
-            selectedUnit.shouldOutline = false;
-            selectedUnit = null;            
+            if (selectedUnit != null)
+            {
+                selectedUnit.shouldOutline = false;
+                selectedUnit = null;
+            }
+            unitToSpawn = null;
+            //abilityToUse = null;
+            abilityToUseNum = -1;
+            abilityStartPosition = null;
+            isTryingToMoveUnit = false;
+            playerRange.Clear();
+            boundary.RemoveBoundary();
         }
-        unitToSpawn = null;
-        //abilityToUse = null;
-        abilityToUseNum = -1;
-        abilityStartPosition = null;
-        isTryingToMoveUnit = false;
-        playerRange.Clear();
-        UIController.instance.UpdateAbilityPanelEnabled(false);
-        boundary.RemoveBoundary();
+        finally
+        {
+            UIController.instance.UpdateAbilityPanelEnabled(false);
+        }
     }
 
     void UpdateTileInfo()

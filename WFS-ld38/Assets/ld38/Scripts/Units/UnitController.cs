@@ -85,10 +85,10 @@ public class UnitController : MonoBehaviour
             if (unitType.nameKey != "Resource Man")
             {
                 abilityPool = unitType.abilityPool;
-                ability1 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
+                ability1 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count)];
                 do
                 {
-                    ability2 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
+                    ability2 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count)];
                 }
                 while (ability2 == ability1);
             }
@@ -279,6 +279,7 @@ public class UnitController : MonoBehaviour
         else
         {
             //Complain
+            UIController.instance.PushNotification("Cannot move unit onto water.");
         }
     }
 
@@ -365,16 +366,14 @@ public class UnitController : MonoBehaviour
     {
         health = Mathf.Clamp(health - damage, 0, maxHealth);
 
-        /*
-        if (health - damage >= 0)
+        if (damage > 0)
         {
-            health -= damage;
+            UIController.instance.PushNotification(string.Format("{0} took {1} damage!", unitType.unitName, damage));
         }
-        else
+        else if (damage < 0)
         {
-            health = 0;
+
         }
-        */
 
         if (health <= 0)
         {

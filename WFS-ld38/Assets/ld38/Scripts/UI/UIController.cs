@@ -170,6 +170,11 @@ public class UIController : MonoBehaviour
         history.AddMessage(msg);
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     public void GameOver(int winner)
     {
         mainScreen.SetActive(false);

@@ -54,7 +54,7 @@ public class TimeTravel : AbilityBehaviour
 
         if (Random.Range(0f, 1f) > 0.995f)
         {
-            Debug.Log("This traveller was lost in the time vortex.");
+            UIController.instance.PushNotification("Time traveller was lost to the void.");
             owner.player.RemoveUnitsFromList(owner);
             Destroy(gameObject, 3f);
             return;
