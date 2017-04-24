@@ -76,13 +76,13 @@ namespace Assets
             {
                 foreach (VoronoiTile neighourT in sT.neighbors)
                 {
-                    if (!searchedTiles[index].Contains(neighourT) && !searchedTiles[Mathf.Clamp(index - 1, 0, 1)].Contains(neighourT) && !tempList.Contains(neighourT))
+                    if (!searchedTiles[index].Contains(neighourT) && !searchedTiles[Mathf.Clamp(index - 1, 0, index)].Contains(neighourT) && !tempList.Contains(neighourT))
                     {
                         tempList.Add(neighourT);
                     }
                 }
             }
-            Debug.LogWarningFormat("Searched index: {0}, Time {1}", index, stopwatch.Elapsed);
+            Debug.LogWarningFormat("Searched index: {0}, Time {1}, Count {2}", index, stopwatch.Elapsed, tempList.Count);
             searchedTiles.Add(tempList);
             if (range > index + 1)
             {

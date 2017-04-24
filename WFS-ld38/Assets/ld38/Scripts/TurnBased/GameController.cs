@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -65,6 +66,8 @@ public class GameController : MonoBehaviour
     private GameObject lastHoveredTile = null;
     private VoronoiTile scriptVoronoiTile;
     private VoronoiTile abilityStartPosition;
+    private List<List<VoronoiTile>> playerRange = new List<List<VoronoiTile>>();
+    public GameObject spawnThings; // TEMPERARY, TO SHOW THE EDGE OF THE RANGE;
     // Check the range of the ability against the start of end position selected
     #endregion
 
@@ -197,21 +200,22 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            UpdateDebugInfo();
         }
+        UpdateDebugInfo();
     }
 
     void HandleMouse1Down(Player p)
     {
-        if (calculatingCanUseTargetAttack)
-            return; //TEMP        
+        //if (calculatingCanUseTargetAttack)
+        //    return; //TEMP
 
         if (abilityToUseNum != -1)
         {
             isTryingToMoveUnit = false;
-            StartCoroutine(UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile));
-            return;
-        }        
+            UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile);
+            //StartCoroutine(UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile));
+            //return;
+        }
         else if (unitToSpawn != null)
         {
             if (scriptVoronoiTile.occupyingUnit == null && scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water)
@@ -442,13 +446,34 @@ public class GameController : MonoBehaviour
             else
             {
                 abilityToUseNum = abilityNum;
+                //ThreadedSearch t = ThreadedSearch.GetPlayerRange(selectedUnit.currentTile, selectedUnit.GetAbility(abilityNum).range);
+                playerRange = VoronoiTile.FindTilesInRange(selectedUnit.currentTile, selectedUnit.GetAbility(abilityNum).range);
+                ShowPlayerRange();
             }
         }
-        else
+        //else
+        //{
+        //    //
+        //    // THE ABILITY PANEL SHOULDN'T SHOW UP WHEN A UNIT IS NOT SELECTED
+        //    //
+        //}
+    }
+
+    void ShowPlayerRange()
+    {
+        //
+        // TEMP, CHANGE THIS
+        //
+        Debug.LogError(playerRange.Count);
+
+        List<VoronoiTile> last = playerRange[playerRange.Count - 1];
+        boundary.MakeBoundary(last);
+        Debug.LogWarning("LAST LIST COUNT: " + last.Count.ToString());
+        for (int i = 0; i < last.Count; i++)
         {
-            //
-            // THE ABILITY PANEL SHOULDN'T SHOW UP WHEN A UNIT IS NOT SELECTED
-            //
+            var center = last[i].centerPoint;
+            center = last[i].altitude > 0 ? (center + (center - planet.transform.position) * last[i].altitude) : center;
+            Instantiate(spawnThings, center, new Quaternion(0, 0, 0, 0));
         }
     }
 
@@ -481,15 +506,31 @@ public class GameController : MonoBehaviour
         return go;
     }
 
-    IEnumerator UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
+    void UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
     {        
         if (targetedPosition == null) // Not targeted
         {
             selectedUnit.UseAbility(abilityNum == 1, abilityStartPosition);
             abilityToUseNum = -1;
+
+            //
+            // NOT WORKING
+            //
+
         }
         else // Targeted
         {
+            if (playerRange.SelectMany(list => list).Contains(targetedPosition))
+            {
+                selectedUnit.UseAbility(abilityNum == 1, targetedPosition);
+                abilityToUseNum = -1;
+            }
+            else
+            {
+                //ERROR: attack out of range!
+                abilityToUseNum = abilityNum;
+                PlayNoSound();
+            }
             //ThreadedSearch t = ThreadedSearch.CanMoveTo(selectedUnit.currentTile, targetedPosition, selectedUnit.GetAbility(abilityNum).range);
 
             //calculatingCanUseTargetAttack = true;
@@ -512,13 +553,7 @@ public class GameController : MonoBehaviour
             //}
 
             //calculatingCanUseTargetAttack = false;
-
-
-
-            // NEEDS TO BE REDONE
-
         }
-        yield return null; // REMOVE THIS LATER
     }
 
     //GameObject UseAbilityFromScriptableObject(Ability a)
@@ -560,6 +595,7 @@ public class GameController : MonoBehaviour
         abilityToUseNum = -1;
         abilityStartPosition = null;
         isTryingToMoveUnit = false;
+        playerRange.Clear();
         UIController.instance.UpdateAbilityPanelEnabled(false);
     }
 
@@ -607,6 +643,8 @@ public class Player
     public bool hasPlayedThisTurn;
     public bool isAI;
     public int number;
+    public int currency;
+    public int incrementCurrency;
     public GameObject playerCamera;
 
     #region Gameplay Properties
