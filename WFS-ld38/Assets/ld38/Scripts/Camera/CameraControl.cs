@@ -12,17 +12,19 @@ public class CameraControl : MonoBehaviour {
     public bool zoomEnabled = true;
     public bool orbitingPlanet = true;
     public GameObject target = null;
+    public GameController scriptGameController;
     #endregion
 
 
     private void Start()
     {
         transform.localPosition = new Vector3(0, 0, -((zoomMin + zoomMax) / 2));
+        scriptGameController = (GameController)FindObjectOfType<GameController>();
     }
  
 	void Update ()
     {
-		if (target != null)
+		if (target != null && !scriptGameController.isPaused)
         {
             //transform.LookAt(target.transform);
 

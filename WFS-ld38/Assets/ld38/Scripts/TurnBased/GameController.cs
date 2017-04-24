@@ -41,8 +41,10 @@ public class GameController : MonoBehaviour
     bool isTryingToMoveUnit;
 
     string currencyName;
-    public Text debugInfo;
 
+    public bool isPaused;
+
+    public Text debugInfo;
     public GameObject tileMarker;
     public BoundaryOutliner boundary;
 
@@ -67,8 +69,8 @@ public class GameController : MonoBehaviour
     private VoronoiTile scriptVoronoiTile;
     private VoronoiTile abilityStartPosition;
     private List<List<VoronoiTile>> playerRange = new List<List<VoronoiTile>>();
-    public GameObject spawnThings; // TEMPERARY, TO SHOW THE EDGE OF THE RANGE;
-    // Check the range of the ability against the start of end position selected
+
+
     #endregion
 
     void Start()
@@ -76,6 +78,7 @@ public class GameController : MonoBehaviour
         audio = GetComponent<AudioSource>();
         GeneratePlanet(); //TEMP
         CancelAllSelection(); // Just in case
+        isPaused = false;
     }
 
     void Update()
@@ -177,7 +180,7 @@ public class GameController : MonoBehaviour
             EndOfTurn(p);
         }
 
-        else
+        else if (!isPaused) // PAUSE FUNCTION HERE
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
@@ -470,17 +473,22 @@ public class GameController : MonoBehaviour
         //
         // TEMP, CHANGE THIS
         //
-        Debug.LogError(playerRange.Count);
+        //Debug.LogError(playerRange.Count);
 
         List<VoronoiTile> last = playerRange[playerRange.Count - 1];
-        boundary.MakeBoundary(last);
-        Debug.LogWarning("LAST LIST COUNT: " + last.Count.ToString());
-        for (int i = 0; i < last.Count; i++)
+        try
         {
-            var center = last[i].centerPoint;
-            center = last[i].altitude > 0 ? (center + (center - planet.transform.position) * last[i].altitude) : center;
-            //Instantiate(spawnThings, center, new Quaternion(0, 0, 0, 0));
+            boundary.MakeBoundary(last);
         }
+        catch
+        { }
+        //Debug.LogWarning("LAST LIST COUNT: " + last.Count.ToString());
+        //for (int i = 0; i < last.Count; i++)
+        //{
+        //    var center = last[i].centerPoint;
+        //    center = last[i].altitude > 0 ? (center + (center - planet.transform.position) * last[i].altitude) : center;
+        //    Instantiate(spawnThings, center, new Quaternion(0, 0, 0, 0));
+        //}
     }
 
     public void SetAbilityDescription(int abilityNum)
