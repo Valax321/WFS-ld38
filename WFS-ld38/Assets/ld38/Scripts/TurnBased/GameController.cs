@@ -189,13 +189,14 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void EndOfTurn()
+    {
+        Player p = players[currentPlayer];
+        p.hasFinishedTurn = true;
+    }
+
     void PlayerUpdate(Player p)
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            p.hasFinishedTurn = true;
-        }
-
         if (p.hasFinishedTurn)
         {
             EndOfTurn(p);
