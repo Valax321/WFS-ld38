@@ -33,7 +33,7 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void UpdateCurrency(string currencyName, int currency, int perTurn)
+    public void UpdateCurrency(string currencyName, long currency, long perTurn)
     {
         if (topBar != null)
         {

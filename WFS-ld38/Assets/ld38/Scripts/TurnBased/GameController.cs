@@ -220,9 +220,12 @@ public class GameController : MonoBehaviour
         {
             if (scriptVoronoiTile.occupyingUnit == null && scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water)
             {
+                // TODO currency checks here!
+
                 var unit = SpawnUnitFromScriptableObject(unitToSpawn, p);
                 scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
                 p.AddUnitToList(unit.GetComponent<UnitController>());
+                UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
             }
             else
             {
@@ -277,6 +280,8 @@ public class GameController : MonoBehaviour
         {
             unit.StartOfTurn();
         }
+
+        UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
     }
 
     #region DAVID
@@ -473,7 +478,7 @@ public class GameController : MonoBehaviour
         {
             var center = last[i].centerPoint;
             center = last[i].altitude > 0 ? (center + (center - planet.transform.position) * last[i].altitude) : center;
-            Instantiate(spawnThings, center, new Quaternion(0, 0, 0, 0));
+            //Instantiate(spawnThings, center, new Quaternion(0, 0, 0, 0));
         }
     }
 
@@ -507,7 +512,15 @@ public class GameController : MonoBehaviour
     }
 
     void UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
-    {        
+    {
+        if (!selectedUnit.CanMakeMove(selectedUnit.GetAbility(abilityNum).movesCost))
+        {
+            //Complain about lack of points.
+            abilityToUseNum = -1;
+            PlayNoSound();
+            return;
+        }
+
         if (targetedPosition == null) // Not targeted
         {
             selectedUnit.UseAbility(abilityNum == 1, abilityStartPosition);
@@ -597,6 +610,7 @@ public class GameController : MonoBehaviour
         isTryingToMoveUnit = false;
         playerRange.Clear();
         UIController.instance.UpdateAbilityPanelEnabled(false);
+        boundary.RemoveBoundary();
     }
 
     void UpdateTileInfo()
@@ -643,13 +657,11 @@ public class Player
     public bool hasPlayedThisTurn;
     public bool isAI;
     public int number;
-    public int currency;
-    public int incrementCurrency;
     public GameObject playerCamera;
 
     #region Gameplay Properties
-    public ulong currencyPoints;
-    public ulong currencyPerTurn;
+    public long currency;
+    public long currencyPerTurn;
     public int health;
 
     public List<UnitController> units;
@@ -668,6 +680,35 @@ public class Player
         new Color32(255, 132, 0, 1), //Orange
         new Color32(81, 0, 255, 1) //Purpleish
     };
+
+    public void AddCurrency(long add)
+    {
+        currency += add;
+    }
+
+    public void AddCurrencyPerTurn(long add)
+    {
+        if (long.MaxValue - currencyPerTurn == add)
+        {
+            currencyPerTurn = long.MaxValue;
+        }
+        else
+        {
+            currencyPerTurn += add;
+        }        
+    }
+
+    public void RemoveCurrencyPerTurn(long rm)
+    {
+        if (currencyPerTurn - rm < 0)
+        {
+            currencyPerTurn = 0;
+        }
+        else
+        {
+            currencyPerTurn -= rm;
+        }
+    }
 
     public void AddUnitToList(UnitController c)
     {

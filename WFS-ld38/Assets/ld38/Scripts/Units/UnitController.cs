@@ -199,6 +199,30 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    public void StealAbility(UnitController other)
+    {
+        if (other.unitType.hasAbilities)
+        {
+            int a1 = Random.Range(0.0f, 1.0f) > 0.5f ? 1 : 0;
+
+            var a = other.GetAbility(a1);
+            if (a1 == 1)
+            {
+                Destroy(aScript1);
+                ability1 = a;
+                aScript1 = (AbilityBehaviour)gameObject.AddComponent(System.Type.GetType(ability1.abilityScript));
+                aScript1.ourAbility = ability1;
+            }
+            else
+            {
+                Destroy(aScript2);
+                ability2 = a;
+                aScript2 = (AbilityBehaviour)gameObject.AddComponent(System.Type.GetType(ability2.abilityScript));
+                aScript2.ourAbility = ability2;
+            }
+        }
+    }
+
     void MakeMove(int cost)
     {
         if (cost < 0)
@@ -214,13 +238,13 @@ public class UnitController : MonoBehaviour
     {
         if (cost < 0)
         {
-            return movesThisTurn == unitType.baseSpeed;
+            return movesThisTurn == unitType.baseSpeed + 1;
         }
 
         return movesThisTurn - cost > 0;
     }
 
-    public virtual void Damage(int damage)
+    public virtual bool Damage(int damage)
     {
         if (health - damage >= 0)
         {
@@ -234,11 +258,17 @@ public class UnitController : MonoBehaviour
         if (health <= 0)
         {
             Killed();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
     public virtual void Killed()
     {
+        Debug.LogFormat("{0} destroyed!", unitType.unitName);
         player.RemoveUnitsFromList(this); //We've been destroyed!
         currentTile.occupyingUnit = null;
         Destroy(gameObject);
