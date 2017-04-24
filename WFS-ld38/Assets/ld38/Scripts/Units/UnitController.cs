@@ -127,8 +127,16 @@ public class UnitController : MonoBehaviour
                 visibleSpecial.transform.SetParent(transform, false);
             }
 
-            health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
-            maxHealth = health;
+            if (unitType.hasAbilities)
+            {
+                GenerateStats();
+            }
+            else
+            {
+                speed = unitType.baseSpeed;
+                health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
+                maxHealth = health;
+            }
 
             if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
             {
@@ -168,6 +176,7 @@ public class UnitController : MonoBehaviour
     {
         bool fullHealth = health != maxHealth; // Is currently damaged rightnow OR something got more health than maxhealth, would be used by ability stealing, which would be done during the game
         speed = Mathf.Max(ability1.movesCost, ability2.movesCost);
+        speed = speed < 0 ? 2 : speed + 1;
         currency = Mathf.Max(Mathf.FloorToInt(Random.Range(ability1.currencyMin, ability1.currencyMax)), Mathf.FloorToInt(Random.Range(ability2.currencyMin, ability2.currencyMax)));
         maxHealth = Mathf.Max(Mathf.FloorToInt(Random.Range(ability1.healthMin, ability1.healthMax)), Mathf.FloorToInt(Random.Range(ability2.healthMin, ability2.healthMax)));
         if (!fullHealth) health = Mathf.Clamp(health, 0, maxHealth);
