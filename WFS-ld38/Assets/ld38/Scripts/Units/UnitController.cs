@@ -24,6 +24,10 @@ public class UnitController : MonoBehaviour
     public GameObject visibleObject;
 
     public int health;
+    public int maxHealth;
+    public bool isDead;
+
+    public int moveSpeedMultiplier = 1;
 
     public VoronoiTile currentTile { get; set; }
 
@@ -69,6 +73,7 @@ public class UnitController : MonoBehaviour
             visibleObject = Instantiate(unitType.unitPrefab);
             visibleObject.transform.SetParent(transform, false);
             health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
+            maxHealth = health;
 
             if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
             {
@@ -121,7 +126,8 @@ public class UnitController : MonoBehaviour
 
     public virtual void StartOfTurn()
     {
-        movesThisTurn = unitType.baseSpeed + 1;
+        movesThisTurn = (unitType.baseSpeed + 1) * moveSpeedMultiplier;
+        moveSpeedMultiplier = 1;
         if (unitType.hasAbilities)
         {
             aScript1.OnTurn();
@@ -248,6 +254,9 @@ public class UnitController : MonoBehaviour
 
     public virtual bool Damage(int damage)
     {
+        health = Mathf.Clamp(health - damage, 0, maxHealth);
+
+        /*
         if (health - damage >= 0)
         {
             health -= damage;
@@ -256,6 +265,7 @@ public class UnitController : MonoBehaviour
         {
             health = 0;
         }
+        */
 
         if (health <= 0)
         {
@@ -270,6 +280,11 @@ public class UnitController : MonoBehaviour
 
     public virtual void Killed()
     {
+        if (isDead)
+            return;
+
+        isDead = true;
+
         if (unitType.hasAbilities)
         {
             aScript1.OnDeath();

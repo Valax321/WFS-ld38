@@ -35,6 +35,18 @@
       </Value>
     </Element>
     <Element>
+      <Key>explosion</Key>
+      <Value>
+        <Element>Explosion</Element>  
+        <Element>Blast</Element>
+        <Element>Detonation</Element>
+        <Element>Eruption</Element>
+        <Element>Ignition</Element>
+        <Element>Bombing</Element>
+        <Element>Fireball</Element>
+      </Value>
+    </Element>
+    <Element>
       <Key>underwhelming</Key>
       <Value>
         <Element>Miserable</Element>
@@ -76,7 +88,7 @@
       <Value>
         <Element>Big</Element>
         <Element>Sizable</Element>
-        <Element>Huuuuge</Element>
+        <Element>'uuuuge</Element>
         <Element>Substantial</Element>
         <Element>Tremendous</Element>
         <Element>Great Big</Element>
@@ -92,6 +104,9 @@
         <Element>Liquid-Dwelling</Element>
         <Element>Aquatic</Element>
         <Element>Wet</Element>
+        <Element>Sea-bound</Element>
+        <Element>Land Despising</Element>
+        <Element>Hydro</Element>
       </Value>
     </Element>
     <Element>
@@ -106,8 +121,7 @@
         <Element>Ultimate</Element>
         <Element>Blind</Element>
       </Value>
-    </Element>
-    
+    </Element>    
     <Element>
       <Key>science</Key>
       <Value>
@@ -120,6 +134,82 @@
         <Element>Futuristic</Element>
         <Element>Very Very Complex</Element>
         <Element>Cutting Edge</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>ranged</Key>
+      <Value>
+        <Element>Long Range</Element>
+        <Element>Ranged</Element>
+        <Element>Distant</Element>
+        <Element>Arcing</Element>
+        <Element>Far-Off</Element>
+        <Element>Incoming</Element>
+        <Element>Sniping</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>projectile</Key>
+      <Value>
+        <Element>Missile</Element>
+        <Element>Projectile</Element>
+        <Element>Shot</Element>
+        <Element>Attack</Element>
+        <Element>Bullet</Element>
+        <Element>Round</Element>
+        <Element>Shell</Element>
+        <Element>Energy Blast</Element>
+        <Element>Volley</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>overload</Key>
+      <Value>
+        <Element>Dangerous</Element>
+        <Element>Risky</Element>
+        <Element>Overcharged</Element>
+        <Element>Powered</Element>
+        <Element>Tradeoff</Element>
+        <Element>Backblast</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>force</Key>
+      <Value>
+        <Element>Intense</Element>
+        <Element>Forceful</Element>
+        <Element>Mysterious</Element>
+        <Element>Aggressive</Element>
+        <Element>Terrifying</Element>
+        <Element>Preventative</Element>
+        <Element>Tactical</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>healthy</Key>
+      <Value>
+        <Element>Healing</Element>
+        <Element>Healthy</Element>
+        <Element>Hygenic</Element>
+        <Element>Maybe Sterile</Element>
+        <Element>Medicated</Element>
+        <Element>Quack's</Element>
+        <Element>Drugged Up</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>heal</Key>
+      <Value>
+        <Element>Heal</Element>
+        <Element>Medpack</Element>
+        <Element>Healthpack</Element>
+        <Element>Syringe</Element>
+        <Element>Balm</Element>
+        <Element>Cream</Element>
+        <Element>Drip</Element>
+        <Element>Procedure</Element>
+        <Element>Operation</Element>
+        <Element>New Spleen</Element>
       </Value>
     </Element>
   </GroupTest>

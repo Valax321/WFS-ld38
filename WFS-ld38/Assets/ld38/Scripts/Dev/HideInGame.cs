@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HideInGame : MonoBehaviour
 {
-#if DEBUG
+#if !DEBUG
     void Awake()
     {
         gameObject.SetActive(false);
