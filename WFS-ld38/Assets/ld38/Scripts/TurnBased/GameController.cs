@@ -563,6 +563,7 @@ public class GameController : MonoBehaviour
         {
             if (selectedUnit.currentTile.baseBiome != VoronoiTile.Biomes.Water)
             {
+                UIController.instance.PushNotification("Sea units cannot use abilities on land.");
                 abilityToUseNum = -1;
                 PlayNoSound();
                 return;
