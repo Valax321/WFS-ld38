@@ -17,11 +17,13 @@ public class UnitController : MonoBehaviour
     public Ability ability1;
     public Ability ability2;
     protected Outline outline;
+    protected Outline outlineSpecial;
     public bool shouldOutline;
     public int movesThisTurn;
     bool invalid;
 
     public GameObject visibleObject;
+    public GameObject visibleSpecial;
 
     public int health;
     public int maxHealth;
@@ -36,6 +38,36 @@ public class UnitController : MonoBehaviour
     Vector3 forward;
 
     public AudioSource unitSound;
+
+    Outline activeOutline
+    {
+        get
+        {
+            if (outlineSpecial != null && unitType.moveType == Unit.UnitType.Sea && currentTile.baseBiome == VoronoiTile.Biomes.Water)
+            {
+                return outlineSpecial;
+            }
+            else
+            {
+                return outline;
+            }
+        }
+    }
+
+    GameObject activeObject
+    {
+        get
+        {
+            if (visibleSpecial != null && unitType.moveType == Unit.UnitType.Sea && currentTile.baseBiome == VoronoiTile.Biomes.Water)
+            {
+                return visibleSpecial;
+            }
+            else
+            {
+                return visibleObject;
+            }
+        }
+    }
 
     void Awake()
     {
@@ -72,19 +104,36 @@ public class UnitController : MonoBehaviour
         {            
             visibleObject = Instantiate(unitType.unitPrefab);
             visibleObject.transform.SetParent(transform, false);
+
+            if (unitType.unitPrefabSpecial != null)
+            {
+                visibleSpecial = Instantiate(unitType.unitPrefabSpecial);
+                visibleSpecial.transform.SetParent(transform, false);
+            }
+
             health = Random.Range(unitType.healthMin, unitType.healthMax + 1);
             maxHealth = health;
 
             if (unitType.moveType == Unit.UnitType.Captial || unitType.moveType == Unit.UnitType.CurrencyGenerator)
             {
                 visibleObject.transform.Rotate(new Vector3(0, 0, Random.Range(0f, 359f)), Space.Self); //Give us a random rotation for variety.
+                if (visibleSpecial != null)
+                {
+                    visibleSpecial.transform.rotation = visibleObject.transform.rotation;
+                }
             }
 
             unitSound = gameObject.AddComponent<AudioSource>();
             unitSound.spatialBlend = 1;
             unitSound.PlayOneShot(RandomSound(unitType.spawnSounds));
             outline = visibleObject.AddComponent<Outline>();
-            outline.enabled = false;        
+            outline.enabled = false;
+
+            if (visibleSpecial != null)
+            {
+                outlineSpecial = visibleSpecial.AddComponent<Outline>();
+                outlineSpecial.enabled = false;
+            }
         }
 
         forward = Vector3.ProjectOnPlane(transform.forward, GetUpVector());
@@ -119,9 +168,9 @@ public class UnitController : MonoBehaviour
         //    transform.position = currentTile.centerPoint + GetUpVector() * currentTile.altitude;
         //}
 
-        transform.rotation = Quaternion.LookRotation(forward, GetUpVector());    
+        transform.rotation = Quaternion.LookRotation(forward, GetUpVector());
 
-        outline.enabled = shouldOutline;
+        SetOutline(shouldOutline);
     }
 
     public virtual void StartOfTurn()
@@ -171,6 +220,12 @@ public class UnitController : MonoBehaviour
             tile.occupyingUnit = this;            
             MakeMove(1);
             unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
+
+            if (visibleSpecial != null)
+            {
+                visibleSpecial.SetActive(tile.baseBiome == VoronoiTile.Biomes.Water);
+                visibleObject.SetActive(tile.baseBiome != VoronoiTile.Biomes.Water);
+            }
 
             if (unitType.hasAbilities)
             {
@@ -228,6 +283,15 @@ public class UnitController : MonoBehaviour
                 aScript2 = (AbilityBehaviour)gameObject.AddComponent(System.Type.GetType(ability2.abilityScript));
                 aScript2.ourAbility = ability2;
             }
+        }
+    }
+
+    void SetOutline(bool enabled)
+    {
+        outline.enabled = enabled;
+        if (outlineSpecial != null)
+        {
+            outlineSpecial.enabled = enabled;
         }
     }
 

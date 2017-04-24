@@ -252,5 +252,17 @@
         <Element>Legend</Element>
       </Value>
     </Element>
+    <Element>
+      <Key>dinosaur</Key>
+      <Value>
+        <Element>Jurassic</Element>
+        <Element>Triassic</Element>
+        <Element>Extinct</Element>
+        <Element>Anachronistic</Element>
+        <Element>Old</Element>
+        <Element>Obsolete</Element>
+        <Element>Hungry</Element>
+      </Value>
+    </Element>
   </GroupTest>
 </NameTable>

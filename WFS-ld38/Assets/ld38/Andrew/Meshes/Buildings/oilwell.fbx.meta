@@ -1,46 +1,15 @@
 fileFormatVersion: 2
-guid: 77621867f8a83b140a65f61f822e37af
-timeCreated: 1492947835
+guid: a317d5b039557a14b89f118894660e90
+timeCreated: 1493035871
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Bomb
-    100004: Eagle
-    100006: IceBolt
-    100008: Sheep
-    100010: Sun
-    100012: Whale
-    100014: Whale_In_A_WheelChair
     400000: //RootNode
-    400002: Bomb
-    400004: Eagle
-    400006: IceBolt
-    400008: Sheep
-    400010: Sun
-    400012: Whale
-    400014: Whale_In_A_WheelChair
     2300000: //RootNode
-    2300002: Bomb
-    2300004: Eagle
-    2300006: IceBolt
-    2300008: Sheep
-    2300010: Whale
-    2300012: Whale_In_A_WheelChair
     3300000: //RootNode
-    3300002: Bomb
-    3300004: Eagle
-    3300006: IceBolt
-    3300008: Sheep
-    3300010: Whale
-    3300012: Whale_In_A_WheelChair
-    4300000: Eagle
-    4300002: Bomb
-    4300004: Whale_In_A_WheelChair
-    4300006: Whale
-    4300008: IceBolt
-    4300010: Sheep
+    4300000: Icosphere
   materials:
     importMaterials: 1
     materialName: 0
@@ -65,7 +34,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.15
+    globalScale: 0.75
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
