@@ -16,10 +16,14 @@ public class Ability : ScriptableObject
     public bool hasLastingEffects;
     public int damageMin;
     public int damageMax;
+    public string abilityScript;
+
+    [Header("Setting up the Unit")]
     public int currencyMin;
     public int currencyMax;
+    public int healthMin;
+    public int healthMax;
     public int movesCost;
-    public string abilityScript;
 
     private string aName;
     private bool hasSetName;

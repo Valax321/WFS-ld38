@@ -21,9 +21,13 @@ public class UnitController : MonoBehaviour
     public bool shouldOutline;
     public int movesThisTurn;
     bool invalid;
+    public AbilityPool abilityPool;
 
     public GameObject visibleObject;
     public GameObject visibleSpecial;
+
+    public int speed;
+    public int currency;
 
     public int health;
     public int maxHealth;
@@ -78,9 +82,20 @@ public class UnitController : MonoBehaviour
     {
         if (unitType.hasAbilities)
         {
-
-            ability1 = unitType.ability1;
-            ability2 = unitType.ability2;
+            if (unitType.nameKey != "Resource Man")
+            {
+                ability1 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
+                do
+                {
+                    ability2 = abilityPool.abilities[Random.Range(0, abilityPool.abilities.Count - 1)];
+                }
+                while (ability2 != ability1);
+            }
+            else
+            {
+                ability1 = unitType.ability1;
+                ability2 = unitType.ability2;
+            }
 
             try
             {
@@ -147,6 +162,16 @@ public class UnitController : MonoBehaviour
         ChildUnitInit();
         StartOfTurn(); 
     }
+    
+    void GenerateStats()
+    {
+        bool fullHealth = health != maxHealth; // Is currently damaged rightnow OR something got more health than maxhealth, would be used by ability stealing, which would be done during the game
+        speed = Mathf.Max(ability1.movesCost, ability2.movesCost);
+        currency = Mathf.Max(Mathf.FloorToInt(Random.Range(ability1.currencyMin, ability1.currencyMax)), Mathf.FloorToInt(Random.Range(ability2.currencyMin, ability2.currencyMax)));
+        maxHealth = Mathf.Max(Mathf.FloorToInt(Random.Range(ability1.healthMin, ability1.healthMax)), Mathf.FloorToInt(Random.Range(ability2.healthMin, ability2.healthMax)));
+        if (!fullHealth) health = Mathf.Clamp(health, 0, maxHealth);
+        else health = maxHealth;
+    }
 
     protected virtual void ChildUnitInit()
     {
@@ -182,7 +207,8 @@ public class UnitController : MonoBehaviour
 
     public virtual void StartOfTurn()
     {
-        movesThisTurn = (unitType.baseSpeed + 1) * moveSpeedMultiplier;
+        //movesThisTurn = (unitType.baseSpeed + 1) * moveSpeedMultiplier;
+        movesThisTurn = (speed + 1) * moveSpeedMultiplier;
         moveSpeedMultiplier = 1;
         if (unitType.hasAbilities)
         {
@@ -310,14 +336,16 @@ public class UnitController : MonoBehaviour
             return;
         }
 
-        movesThisTurn = Mathf.Clamp(movesThisTurn - cost, 0, unitType.baseSpeed);
+        //movesThisTurn = Mathf.Clamp(movesThisTurn - cost, 0, unitType.baseSpeed);
+        movesThisTurn = Mathf.Clamp(movesThisTurn - cost, 0, speed);
     }
 
     public bool CanMakeMove(int cost)
     {
         if (cost < 0)
         {
-            return movesThisTurn == unitType.baseSpeed + 1;
+            //return movesThisTurn == unitType.baseSpeed + 1;
+            return movesThisTurn == speed + 1;
         }
 
         return movesThisTurn - cost > 0;
