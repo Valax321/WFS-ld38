@@ -257,7 +257,7 @@ public class GameController : MonoBehaviour
                     if (scriptVoronoiTile.occupyingUnit == null)
                     {
                         // TODO currency checks here!
-                        if (scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water && unitToSpawn.moveType == Unit.UnitType.Land) // If you try to place land units in water
+                        if (scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water || unitToSpawn.moveType != Unit.UnitType.Land) // If you try to place land units in water
                         {
                             var unit = SpawnUnitFromScriptableObject(unitToSpawn, p);
                             scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
