@@ -126,6 +126,15 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    public virtual void EndOfTurn()
+    {
+        if (unitType.hasAbilities)
+        {
+            aScript1.OnEndOfTurn();
+            aScript2.OnEndOfTurn();
+        }
+    }
+
     public Vector3 GetUpVector()
     {
         return transform.position - Vector3.zero;

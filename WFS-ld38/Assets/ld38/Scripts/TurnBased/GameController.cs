@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
 using Assets;
+using cakeslice;
 
 [AddComponentMenu("ld38/Game Controller")]
 public class GameController : MonoBehaviour
@@ -42,6 +43,7 @@ public class GameController : MonoBehaviour
     public Text debugInfo;
 
     public GameObject tileMarker;
+    public BoundaryOutliner boundary;
 
     [HideInInspector]
     public Camera cam;
@@ -119,6 +121,10 @@ public class GameController : MonoBehaviour
 
         currencyName = NameGenerator.Instance.GetRandomName("Currency");
         Debug.LogFormat("Currency name: {0}", currencyName);
+        if (tileMarker != null)
+        {
+            tileMarker.SetActive(true);
+        }
     }
 
     public void GeneratePlanet()
@@ -126,6 +132,28 @@ public class GameController : MonoBehaviour
         //planet.seed = seed;
         //planet.landAmount = waterLevel;
         StartCoroutine(planet.Create());
+    }
+
+    void EndOfTurn(Player p)
+    {
+        CancelAllSelection();
+        p.hasPlayedThisTurn = false;
+        p.hasFinishedTurn = false;
+
+        foreach (var unit in p.units)
+        {
+            unit.EndOfTurn();
+        }
+
+        if (currentPlayer + 1 < players.Count)
+        {
+            currentPlayer++;
+        }
+        else
+        {
+            currentPlayer = 0; //Wrap back.
+            turnNumber++; //We've completed a whole round.
+        }        
     }
 
     void PlayerUpdate(Player p)
@@ -137,17 +165,7 @@ public class GameController : MonoBehaviour
 
         if (p.hasFinishedTurn)
         {
-            p.hasPlayedThisTurn = false;
-            p.hasFinishedTurn = false;
-            if (currentPlayer + 1 < players.Count)
-            {
-                currentPlayer++;
-            }
-            else
-            {
-                currentPlayer = 0; //Wrap back.
-                turnNumber++; //We've completed a whole round.
-            }
+            EndOfTurn(p);
         }
 
         else
@@ -537,6 +555,9 @@ public class Player
         isAI = ai;
         playerCamera = cam;
         units = new List<UnitController>();
+        playerColor = colors[Mathf.Clamp(index, 0, 8)];
+
+        playerCamera.GetComponent<OutlineEffect>().lineColor0 = playerColor;
     }
 
     public bool hasFinishedTurn;
@@ -551,7 +572,21 @@ public class Player
     public int health;
 
     public List<UnitController> units;
+
+    public Color playerColor;
     #endregion
+
+    static Color[] colors = new Color[]
+    {
+        Color.red,
+        Color.cyan,
+        Color.green,
+        Color.yellow,
+        Color.magenta,
+        Color.blue,
+        new Color32(255, 132, 0, 1), //Orange
+        new Color32(81, 0, 255, 1) //Purpleish
+    };
 
     public void AddUnitToList(UnitController c)
     {
