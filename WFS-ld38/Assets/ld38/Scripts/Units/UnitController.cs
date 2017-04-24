@@ -54,7 +54,7 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    GameObject activeObject
+    public GameObject activeObject
     {
         get
         {

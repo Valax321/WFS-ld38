@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
     public int seed;
     public float waterLevel;
-    
+
     public Generate planet;
     public GameObject cameraPrefab;
 
@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour
     public int abilityToUseNum = -1;
     [HideInInspector]
     public UnitController selectedUnit; // Selecting a unit to use ability and such
-    
+
     private GameObject hoveredTile;
     private GameObject lastHoveredTile = null;
     private VoronoiTile scriptVoronoiTile;
@@ -138,7 +138,7 @@ public class GameController : MonoBehaviour
             {
                 GetComponent<SpawnCapital>().GenerateCapital(players[i]);
             }
-        }        
+        }
 
         currencyName = NameGenerator.Instance.GetRandomName("Currency");
         Debug.LogFormat("Currency name: {0}", currencyName);
@@ -174,7 +174,7 @@ public class GameController : MonoBehaviour
         {
             currentPlayer = 0; //Wrap back.
             turnNumber++; //We've completed a whole round.
-        }        
+        }
     }
 
     void PlayerUpdate(Player p)
@@ -201,7 +201,7 @@ public class GameController : MonoBehaviour
                 }
                 if (Input.GetButtonDown("Fire1"))
                 {
-                    HandleMouse1Down(p);                    
+                    HandleMouse1Down(p);
                 }
             }
             if (Input.GetButtonDown("Fire2"))
@@ -391,7 +391,7 @@ public class GameController : MonoBehaviour
                     UIController.instance.UpdateAbility2Name(selectedUnit.ability2.abilityName);
                 }
 
-                UIController.instance.UpdateMoveButtonEnabled((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));           
+                UIController.instance.UpdateMoveButtonEnabled((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));
             }
             else
             {
@@ -440,7 +440,7 @@ public class GameController : MonoBehaviour
 
             if (valid && scriptVoronoiTile.occupyingUnit == null)
             {
-                selectedUnit.MoveToTile(scriptVoronoiTile);                
+                selectedUnit.MoveToTile(scriptVoronoiTile);
             }
             else
             {
@@ -531,6 +531,16 @@ public class GameController : MonoBehaviour
 
     void UseAbilityAtPosition(int abilityNum, VoronoiTile targetedPosition = null)
     {
+        if (selectedUnit.unitType.moveType == Unit.UnitType.Sea)
+        {
+            if (selectedUnit.currentTile.baseBiome != VoronoiTile.Biomes.Water)
+            {
+                abilityToUseNum = -1;
+                PlayNoSound();
+                return;
+            }
+        }
+
         if (!selectedUnit.CanMakeMove(selectedUnit.GetAbility(abilityNum).movesCost))
         {
             //Complain about lack of points.
@@ -599,6 +609,17 @@ public class GameController : MonoBehaviour
     //    //
     //    throw new NotImplementedException();
     //}
+
+    public void Pause(bool paused)
+    {
+        isPaused = paused;
+        UIController.instance.UpdatePause(paused);
+    }
+
+    public void SceneRestart()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
 
     public void PlaySelectSound()
     {

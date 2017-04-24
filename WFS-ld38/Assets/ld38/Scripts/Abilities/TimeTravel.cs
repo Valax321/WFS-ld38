@@ -48,7 +48,7 @@ public class TimeTravel : AbilityBehaviour
         isTravelling = true;
         teleportedTile.occupyingUnit = null;
         Debug.Log("Hiding...");
-        owner.visibleObject.SetActive(false);
+        owner.activeObject.SetActive(false);
         travelledTurns = 0;
         owner.unitSound.PlayOneShot(travelSound);
 
@@ -64,7 +64,7 @@ public class TimeTravel : AbilityBehaviour
     void ComeBackAndMurder()
     {
         Debug.Log("TIME TRAVEL SURPRISE!");
-        owner.visibleObject.SetActive(true);
+        owner.activeObject.SetActive(true);
 
         if (teleportedTile.occupyingUnit != null)
         {
