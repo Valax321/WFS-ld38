@@ -25,7 +25,7 @@ public class GameController : MonoBehaviour
 
     public int seed;
     public float waterLevel;
-
+    
     public Generate planet;
     public GameObject cameraPrefab;
 
@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
 
     public bool isPaused;
 
+    public int capitalSpawnRange = 2;
     public Text debugInfo;
     public GameObject tileMarker;
     public BoundaryOutliner boundary;
@@ -64,13 +65,12 @@ public class GameController : MonoBehaviour
     public int abilityToUseNum = -1;
     [HideInInspector]
     public UnitController selectedUnit; // Selecting a unit to use ability and such
-
+    
     private GameObject hoveredTile;
     private GameObject lastHoveredTile = null;
     private VoronoiTile scriptVoronoiTile;
     private VoronoiTile abilityStartPosition;
     private List<List<VoronoiTile>> playerRange = new List<List<VoronoiTile>>();
-
 
     #endregion
 
@@ -150,7 +150,7 @@ public class GameController : MonoBehaviour
             {
                 GetComponent<SpawnCapital>().GenerateCapital(players[i]);
             }
-        }
+        }        
 
         currencyName = NameGenerator.Instance.GetRandomName("Currency");
         Debug.LogFormat("Currency name: {0}", currencyName);
@@ -186,7 +186,7 @@ public class GameController : MonoBehaviour
         {
             currentPlayer = 0; //Wrap back.
             turnNumber++; //We've completed a whole round.
-        }
+        }        
     }
 
     public void EndOfTurn()
@@ -214,7 +214,7 @@ public class GameController : MonoBehaviour
                 }
                 if (Input.GetButtonDown("Fire1"))
                 {
-                    HandleMouse1Down(p);
+                    HandleMouse1Down(p);                    
                 }
             }
             if (Input.GetButtonDown("Fire2"))
@@ -245,25 +245,47 @@ public class GameController : MonoBehaviour
         }
         else if (unitToSpawn != null)
         {
-            if (scriptVoronoiTile.occupyingUnit == null && scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water)
+            //
+            // TODO CREATE PROPER CURRENCY
+            //
+            if (players[currentPlayer].currency >= unitToSpawn.currency)
             {
-                // TODO currency checks here!
-
-                var unit = SpawnUnitFromScriptableObject(unitToSpawn, p);
-                scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
-                p.AddUnitToList(unit.GetComponent<UnitController>());
-                UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
-            }
-            else if (scriptVoronoiTile.baseBiome == VoronoiTile.Biomes.Water)
-            {
-                UIController.instance.PushNotification(string.Format("This unit cannot be spawned on water."));
+                players[currentPlayer].currency -= unitToSpawn.currency;
+                UIController.instance.UpdateCurrency(currencyName, players[currentPlayer].currency, players[currentPlayer].currencyPerTurn);
+                if (playerRange.SelectMany(list => list).Contains(scriptVoronoiTile))
+                {
+                    if (scriptVoronoiTile.occupyingUnit == null)
+                    {
+                        // TODO currency checks here!
+                        if (scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water && unitToSpawn.moveType == Unit.UnitType.Land) // If you try to place land units in water
+                        {
+                            var unit = SpawnUnitFromScriptableObject(unitToSpawn, p);
+                            scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
+                            p.AddUnitToList(unit.GetComponent<UnitController>());
+                            UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
+                        }
+                        else
+                        {
+                            UIController.instance.PushNotification(string.Format("This unit cannot be spawned on water."));
+                            // TELL THE PLAYER YOU CAN'T PUT LAND UNITS ON WATER
+                        }
+                    }
+                    else
+                    {
+                        UIController.instance.PushNotification(string.Format("This tile is occupied by {0}", scriptVoronoiTile.occupyingUnit.unitType.unitName));
+                        // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
+                    }
+                }
+                else
+                {
+                    UIController.instance.PushNotification(string.Format("You cannot spawn a unit outside of range."));
+                    // TELL THE PLAYER IT'S OUT OF RANGE
+                }
             }
             else
             {
-                //
-                // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
-                //
-                UIController.instance.PushNotification(string.Format("This tile is occupied by {0}", scriptVoronoiTile.occupyingUnit.unitType.unitName));
+                UIController.instance.PushNotification(string.Format("You don't have enough {1} to spawn this unit, {1} required: {0}.", unitToSpawn.currency, currencyName));
+                // NOT ENOUGH CURRENCY
             }
         }
         else if (selectedUnit != null && isTryingToMoveUnit)
@@ -303,9 +325,7 @@ public class GameController : MonoBehaviour
 
             p.playerCamera.SetActive(true);
         }
-        #region DAVID
         cam = FindObjectOfType<CameraControl>().gameObject.GetComponent<Camera>();
-        #endregion
 
         UIController.instance.UpdateDescriptionEnabled(false);
         foreach (var unit in p.units)
@@ -318,7 +338,6 @@ public class GameController : MonoBehaviour
         UIController.instance.PushNotification(string.Format("Player {0}'s turn.", p.number + 1));
     }
 
-    #region DAVID
     void UpdateDebugInfo()
     {
         debugInfo.text = string.Format("unitToSpawn: {0}\nabilityToUse: {1}\nabilityStartPosition: {2}\nhoveredTile: {3}\nhoveredTilePosition: {4}\nunitSelected: {5}", unitToSpawn, abilityToUseNum, abilityStartPosition == null ? "" : abilityStartPosition.centerPoint.ToString(), hoveredTile, scriptVoronoiTile == null ? "" : scriptVoronoiTile.centerPoint.ToString(), selectedUnit);
@@ -341,20 +360,6 @@ public class GameController : MonoBehaviour
 
             HighlightObject();
         }
-    }
-
-    public void CloseUI(GameObject UI)
-    {
-        // PLAY CLOSING ANIMATION
-
-        UI.SetActive(false);
-    }
-
-    public void OpenUI(GameObject UI)
-    {
-        // PLAY OPENING ANIMATION
-
-        UI.SetActive(true);
     }
 
     void HighlightObject()
@@ -412,7 +417,7 @@ public class GameController : MonoBehaviour
                     UIController.instance.UpdateAbility2Name(selectedUnit.ability2.abilityName);
                 }
 
-                UIController.instance.UpdateMoveButtonEnabled((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));
+                UIController.instance.UpdateMoveButtonEnabled((selectedUnit.unitType.moveType != Unit.UnitType.CurrencyGenerator) && (selectedUnit.unitType.moveType != Unit.UnitType.Captial));           
             }
             else
             {
@@ -432,6 +437,8 @@ public class GameController : MonoBehaviour
     {
         CancelAllSelection(); // Cancel other selections like ability and such
         unitToSpawn = unit;
+        playerRange = VoronoiTile.FindTilesInRange(players[currentPlayer].capital.currentTile, capitalSpawnRange);
+        ShowPlayerRange();
     }
 
     public void SetUnitMoveMode()
@@ -461,12 +468,11 @@ public class GameController : MonoBehaviour
 
             if (valid && scriptVoronoiTile.occupyingUnit == null)
             {
-                selectedUnit.MoveToTile(scriptVoronoiTile);
+                selectedUnit.MoveToTile(scriptVoronoiTile);                
             }
             else
             {
                 PlayNoSound();
-                UIController.instance.PushNotification("Cannot move unit here.");
             }
         }
     }
@@ -562,7 +568,6 @@ public class GameController : MonoBehaviour
                 return;
             }
         }
-
         if (!selectedUnit.CanMakeMove(selectedUnit.GetAbility(abilityNum).movesCost))
         {
             //Complain about lack of points.
@@ -731,9 +736,6 @@ public class GameController : MonoBehaviour
             gameFinished = true;
         }
     }
-
-
-    #endregion    
 }
 
 public class Player
@@ -754,6 +756,7 @@ public class Player
     public bool isAI;
     public int number;
     public GameObject playerCamera;
+    public Captial capital;
 
     public bool isDead;
 
@@ -781,7 +784,7 @@ public class Player
 
     public void AddCurrency(long add)
     {
-        currency += add;        
+        currency += add;
     }
 
     public void AddCurrencyPerTurn(long add)

@@ -21,6 +21,7 @@ public class Unit : ScriptableObject
     public int healthMin;
     public int healthMax;
     public int baseSpeed; //Actually moves BUT I CANT NAME THINGS PROPERLY
+    public int currency;
 
     [Header("Unit Appearance")]
     public GameObject unitPrefab;

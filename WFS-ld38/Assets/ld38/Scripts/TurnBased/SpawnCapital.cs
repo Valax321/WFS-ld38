@@ -59,5 +59,7 @@ public class SpawnCapital : MonoBehaviour {
         crtl.player = p;
         crtl.InitUnit();
         tile.occupyingUnit = crtl;
+
+        p.capital = crtl;
     }
 }
