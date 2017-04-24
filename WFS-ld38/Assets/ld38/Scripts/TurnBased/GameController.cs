@@ -241,11 +241,16 @@ public class GameController : MonoBehaviour
                 p.AddUnitToList(unit.GetComponent<UnitController>());
                 UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
             }
+            else if (scriptVoronoiTile.baseBiome == VoronoiTile.Biomes.Water)
+            {
+                UIController.instance.PushNotification(string.Format("This unit cannot be spawned on water."));
+            }
             else
             {
                 //
                 // TELL THE PLAYER YOU CAN'T PLACE THINGS WHERE THERE ARE ALREADY THINGS THERE
                 //
+                UIController.instance.PushNotification(string.Format("This tile is occupied by {0}", scriptVoronoiTile.occupyingUnit.unitType.unitName));
             }
         }
         else if (selectedUnit != null && isTryingToMoveUnit)
@@ -297,6 +302,7 @@ public class GameController : MonoBehaviour
 
         UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
         UIController.instance.UpdateHP(p.health);
+        UIController.instance.PushNotification(string.Format("Player {0}'s turn.", p.number + 1));
     }
 
     #region DAVID
@@ -546,6 +552,7 @@ public class GameController : MonoBehaviour
         if (!selectedUnit.CanMakeMove(selectedUnit.GetAbility(abilityNum).movesCost))
         {
             //Complain about lack of points.
+            UIController.instance.PushNotification(string.Format("Not enough moves. Needs {0}", selectedUnit.GetAbility(abilityNum).movesCost == -1 ? selectedUnit.speed : selectedUnit.GetAbility(abilityNum).movesCost));
             abilityToUseNum = -1;
             PlayNoSound();
             return;
@@ -572,6 +579,7 @@ public class GameController : MonoBehaviour
             else
             {
                 //ERROR: attack out of range!
+                UIController.instance.PushNotification(string.Format("Attack out of range. Max distance is {0}", selectedUnit.GetAbility(abilityNum).range));
                 abilityToUseNum = abilityNum;
                 PlayNoSound();
             }

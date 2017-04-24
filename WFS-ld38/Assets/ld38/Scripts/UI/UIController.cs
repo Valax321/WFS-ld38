@@ -25,6 +25,8 @@ public class UIController : MonoBehaviour
     public GameObject mainScreen;
     public GameObject pauseScreen;
 
+    public History history;
+
     public static UIController instance { get { return uiInstance; } }
     static UIController uiInstance;
 
@@ -160,5 +162,10 @@ public class UIController : MonoBehaviour
     {
         pauseScreen.SetActive(isPaused);
         mainScreen.SetActive(!isPaused);
+    }
+
+    public void PushNotification(string msg)
+    {
+        history.AddMessage(msg);
     }
 }
