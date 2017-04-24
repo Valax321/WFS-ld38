@@ -119,7 +119,7 @@ public class UnitController : MonoBehaviour
 
     public virtual void StartOfTurn()
     {
-        movesThisTurn = unitType.baseSpeed;
+        movesThisTurn = unitType.baseSpeed + 1;
         if (unitType.hasAbilities)
         {
             aScript1.OnTurn();
@@ -201,11 +201,22 @@ public class UnitController : MonoBehaviour
 
     void MakeMove(int cost)
     {
+        if (cost < 0)
+        {
+            movesThisTurn = 0;
+            return;
+        }
+
         movesThisTurn = Mathf.Clamp(movesThisTurn - cost, 0, unitType.baseSpeed);
     }
 
     public bool CanMakeMove(int cost)
     {
+        if (cost < 0)
+        {
+            return movesThisTurn == unitType.baseSpeed;
+        }
+
         return movesThisTurn - cost > 0;
     }
 
@@ -226,9 +237,10 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    protected virtual void Killed()
+    public virtual void Killed()
     {
         player.RemoveUnitsFromList(this); //We've been destroyed!
+        currentTile.occupyingUnit = null;
         Destroy(gameObject);
     }
 

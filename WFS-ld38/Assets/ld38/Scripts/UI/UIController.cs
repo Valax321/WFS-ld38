@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
     const string DescriptionString = "Help: {0}";
     const string BiomeString = "Biome: {0}";
     const string TileCurrencyString = "{0}: {1}";
+    const string UnitAbilityPanelString = "{0} ({1} moves left)";
 
     public GameObject topBar;
     public GameObject historyPanel;
@@ -104,11 +105,11 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void UpdateAbilityPanelName(string name)
+    public void UpdateAbilityPanelName(string name, int moves)
     {
         if (abilityPanel != null)
         {
-            abilityPanel.transform.FindChild("Unit Name Label").GetComponent<Text>().text = name;
+            abilityPanel.transform.FindChild("Unit Name Label").GetComponent<Text>().text = string.Format(UnitAbilityPanelString, name, moves - 1);
         }
     }
 

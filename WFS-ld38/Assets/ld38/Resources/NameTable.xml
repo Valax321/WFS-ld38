@@ -96,14 +96,31 @@
     </Element>
     <Element>
       <Key>sheep</Key>
-      <Element>Ignorant</Element>
-      <Element>Revolutionary</Element>
-      <Element>Fantastical</Element>
-      <Element>Unbelievable</Element>
-      <Element>Wonderful</Element>
-      <Element>Perfect</Element>
-      <Element>Ultimate</Element>
-      <Element>Blind</Element>
-    </Element>   
+      <Value>
+        <Element>Ignorant</Element>
+        <Element>Revolutionary</Element>
+        <Element>Fantastical</Element>
+        <Element>Unbelievable</Element>
+        <Element>Wonderful</Element>
+        <Element>Perfect</Element>
+        <Element>Ultimate</Element>
+        <Element>Blind</Element>
+      </Value>
+    </Element>
+    
+    <Element>
+      <Key>science</Key>
+      <Value>
+        <Element>Scientific</Element>
+        <Element>Magical</Element>
+        <Element>FAKED</Element>
+        <Element>PhD Research Paper</Element>
+        <Element>Experimental</Element>
+        <Element>SCIENCE</Element>
+        <Element>Futuristic</Element>
+        <Element>Very Very Complex</Element>
+        <Element>Cutting Edge</Element>
+      </Value>
+    </Element>
   </GroupTest>
 </NameTable>

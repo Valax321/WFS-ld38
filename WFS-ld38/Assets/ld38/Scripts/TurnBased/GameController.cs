@@ -204,14 +204,14 @@ public class GameController : MonoBehaviour
     void HandleMouse1Down(Player p)
     {
         if (calculatingCanUseTargetAttack)
-            return; //TEMP
+            return; //TEMP        
 
         if (abilityToUseNum != -1)
         {
             isTryingToMoveUnit = false;
             StartCoroutine(UseAbilityAtPosition(abilityToUseNum, scriptVoronoiTile));
             return;
-        }
+        }        
         else if (unitToSpawn != null)
         {
             if (scriptVoronoiTile.occupyingUnit == null && scriptVoronoiTile.baseBiome != VoronoiTile.Biomes.Water)
@@ -244,6 +244,11 @@ public class GameController : MonoBehaviour
                 CancelAllSelection();
                 UpdateUnitSelected(scriptVoronoiTile);
             }
+        }
+
+        if (selectedUnit != null)
+        {
+            UIController.instance.UpdateAbilityPanelName(selectedUnit.unitType.unitName, selectedUnit.movesThisTurn);
         }
     }
 
@@ -353,7 +358,7 @@ public class GameController : MonoBehaviour
                 // SHOW INFORMATION OF UNIT SELECTED?
                 //
                 UIController.instance.UpdateAbilityPanelEnabled(true);
-                UIController.instance.UpdateAbilityPanelName(script.occupyingUnit.unitType.unitName);
+                UIController.instance.UpdateAbilityPanelName(script.occupyingUnit.unitType.unitName, script.occupyingUnit.movesThisTurn);
                 bool ab = selectedUnit.unitType.hasAbilities;
                 UIController.instance.UpdateAbility1Enabled(ab);
                 UIController.instance.UpdateAbility2Enabled(ab);

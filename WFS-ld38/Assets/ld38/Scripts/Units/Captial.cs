@@ -21,7 +21,7 @@ public class Captial : UnitController
         player.health = health;
     }
 
-    protected override void Killed()
+    public override void Killed()
     {
         base.Killed();
     }
