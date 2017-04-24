@@ -10,13 +10,11 @@ public class BoundaryOutliner : MonoBehaviour
 
     void Awake()
     {
-        line = GetComponent<LineRenderer>();
-        gameObject.SetActive(false);
+        line = GetComponent<LineRenderer>();        
     }
 
     public void MakeBoundary(List<VoronoiTile> tiles)
-    {
-        gameObject.SetActive(true);
+    {        
         if (line != null)
         {
             List<Vector3> positions = new List<Vector3>();
@@ -27,6 +25,6 @@ public class BoundaryOutliner : MonoBehaviour
 
     public void RemoveBoundary()
     {
-        gameObject.SetActive(false);
+        
     }
 }
