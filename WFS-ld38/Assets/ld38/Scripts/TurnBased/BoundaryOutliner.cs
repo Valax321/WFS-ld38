@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Assets;
+using System;
 
 public class BoundaryOutliner : MonoBehaviour
 {
@@ -26,15 +27,30 @@ public class BoundaryOutliner : MonoBehaviour
         }
     }
 
-    List<VoronoiTile> SortList(List<VoronoiTile> list)
+    List<VoronoiTile> SortList(List<VoronoiTile> listToClone)
     {
+        List<VoronoiTile> list = new List<VoronoiTile>();
+        for (int i = 0; i < listToClone.Count; i++)
+        {
+            list.Add(listToClone[i]);
+        }
         List<VoronoiTile> tempList = new List<VoronoiTile>() { list[0] };
         list.RemoveAt(0);
-        int count = list.Count;
+        int count = list.Count - 1;
         for (int i = 0; i < count; i++)
         {
+            //for (int j = 0; j < count - i - 1; j++)
+            //{
+            //    if (list[i].neighbors.Contains(list[Mathf.FloorToInt(Mathf.Clamp(j+i+1, 0, count-i))]))
+            //    {
+            //        VoronoiTile item = list[j + i+1];
+            //        list.RemoveAt(j + i+1);
+            //        list.Insert(Mathf.FloorToInt(Mathf.Clamp(i + 1, 0, count-1)), item);
+            //        break;
+            //    }
+            //}
             tempList.Add(list.Where(x => tempList[i].neighbors.Contains(x)).FirstOrDefault());
-            if (i < count-1)
+            if (i < count - 1)
             {
                 list.Remove(tempList[i + 1]);
             }
