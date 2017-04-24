@@ -74,6 +74,7 @@ public class UnitController : MonoBehaviour
             }
 
             unitSound = gameObject.AddComponent<AudioSource>();
+            unitSound.spatialBlend = 1;
             unitSound.PlayOneShot(RandomSound(unitType.spawnSounds));
             outline = go.AddComponent<Outline>();
             outline.enabled = false;        
@@ -228,6 +229,7 @@ public class UnitController : MonoBehaviour
     protected virtual void Killed()
     {
         player.RemoveUnitsFromList(this); //We've been destroyed!
+        Destroy(gameObject);
     }
 
     AudioClip RandomSound(AudioClip[] clips)

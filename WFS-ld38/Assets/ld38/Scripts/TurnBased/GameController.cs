@@ -45,6 +45,11 @@ public class GameController : MonoBehaviour
     public GameObject tileMarker;
     public BoundaryOutliner boundary;
 
+    public AudioClip clickSound;
+    public AudioClip deselectSound;
+    public AudioClip noSound;
+    AudioSource audio;
+
     [HideInInspector]
     public Camera cam;
     [HideInInspector]
@@ -65,6 +70,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        audio = GetComponent<AudioSource>();
         GeneratePlanet(); //TEMP
         CancelAllSelection(); // Just in case
     }
@@ -187,7 +193,7 @@ public class GameController : MonoBehaviour
             {
                 if (!EventSystem.current.IsPointerOverGameObject())
                 {
-                    CancelAllSelection();
+                    CancelAllSelection(true);
                 }
             }
 
@@ -224,12 +230,14 @@ public class GameController : MonoBehaviour
         else if (selectedUnit != null && isTryingToMoveUnit)
         {
             MoveSelectedUnit();
+            PlaySelectSound();
         }
         else
         {
-            if (scriptVoronoiTile != null && scriptVoronoiTile.occupyingUnit != null && scriptVoronoiTile.occupyingUnit.player != p)
+            if (scriptVoronoiTile != null && scriptVoronoiTile.occupyingUnit != null && scriptVoronoiTile.occupyingUnit.player != p) //Is enemy unit
             {
                 CancelAllSelection();
+                PlayNoSound();
             }
             else
             {
@@ -338,6 +346,9 @@ public class GameController : MonoBehaviour
                 selectedUnit = script.occupyingUnit;
                 selectedUnit.shouldOutline = true;
                 abilityStartPosition = script;
+
+                PlaySelectSound();
+
                 //
                 // SHOW INFORMATION OF UNIT SELECTED?
                 //
@@ -402,7 +413,11 @@ public class GameController : MonoBehaviour
 
             if (valid && scriptVoronoiTile.occupyingUnit == null)
             {
-                selectedUnit.MoveToTile(scriptVoronoiTile);
+                selectedUnit.MoveToTile(scriptVoronoiTile);                
+            }
+            else
+            {
+                PlayNoSound();
             }
         }
     }
@@ -486,7 +501,8 @@ public class GameController : MonoBehaviour
             else
             {
                 //ERROR: attack out of range!
-                abilityToUseNum = 1;
+                abilityToUseNum = abilityNum;
+                PlayNoSound();
             }
 
             calculatingCanUseTargetAttack = false;
@@ -505,8 +521,23 @@ public class GameController : MonoBehaviour
     //    throw new NotImplementedException();
     //}
 
-    void CancelAllSelection()
+    public void PlaySelectSound()
     {
+        audio.PlayOneShot(clickSound);
+    }
+
+    public void PlayNoSound()
+    {
+        audio.PlayOneShot(noSound);
+    }
+
+    void CancelAllSelection(bool playSound = false)
+    {
+        if (playSound)
+        {
+            audio.PlayOneShot(deselectSound);
+        }
+
         if (selectedUnit != null)
         {
             selectedUnit.shouldOutline = false;
