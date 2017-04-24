@@ -29,5 +29,6 @@ public class MainMenu : MonoBehaviour
         controller.numPlayers = players;
         ui.SetActive(true);
         gameObject.SetActive(false);
+        controller.GeneratePlanet();
     }
 }

@@ -33,6 +33,7 @@ public class GameController : MonoBehaviour
     int turnNumber;
     [Range(2, 8)]
     public int numPlayers;
+    public int curPlayerCount;
 
     bool gameFinished;
     bool gameStarted;
@@ -88,13 +89,15 @@ public class GameController : MonoBehaviour
             //Start the game
             StartGame();
         }
+        else if (gameFinished)
+        {
+            Debug.Log("Game over.");
+        }
+
         else if (gameStarted)
         {
             GameplayUpdate();
         }
-
-        #region DAVID        
-        #endregion
     }
 
     void GameplayUpdate()
@@ -115,6 +118,7 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         gameStarted = true;
+        curPlayerCount = numPlayers;
         for (int i = 0; i < numPlayers; i++)
         {
             if (cameraPrefab != null)
@@ -129,7 +133,12 @@ public class GameController : MonoBehaviour
                 players.Add(new Player(i, false, null));
             }
             Debug.LogFormat("Added player {0}", i);
-        }
+
+            if (GetComponent<SpawnCapital>() != null)
+            {
+                GetComponent<SpawnCapital>().GenerateCapital(players[i]);
+            }
+        }        
 
         currencyName = NameGenerator.Instance.GetRandomName("Currency");
         Debug.LogFormat("Currency name: {0}", currencyName);
@@ -646,6 +655,32 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void PlayerHurt(Player p)
+    {
+        if (players.IndexOf(p) == currentPlayer)
+        {
+            UIController.instance.UpdateHP(p.health);
+        }
+    }
+
+    public void PlayerKilled(Player p)
+    {
+        CancelAllSelection();
+        foreach (var unit in p.units.ToArray())
+        {
+            unit.Killed();
+        }
+
+        p.isDead = true;
+        curPlayerCount--;
+
+        if (curPlayerCount == 1)
+        {
+            //Someone won. End game.
+            gameFinished = true;
+        }
+    }
+
 
     #endregion    
 }
@@ -668,6 +703,8 @@ public class Player
     public bool isAI;
     public int number;
     public GameObject playerCamera;
+
+    public bool isDead;
 
     #region Gameplay Properties
     public long currency;

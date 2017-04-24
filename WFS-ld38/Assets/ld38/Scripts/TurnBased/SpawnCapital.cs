@@ -22,7 +22,7 @@ public class SpawnCapital : MonoBehaviour {
 		
 	}
 
-    public void GenerateCapital()
+    public void GenerateCapital(Player p)
     {
         //
         // FILE IT UNDER DIFFERENT PLAYER
@@ -35,7 +35,7 @@ public class SpawnCapital : MonoBehaviour {
             int num = Random.Range(0, possibleChild.Count);
             plate = planet.transform.GetChild(possibleChild[Mathf.FloorToInt(num)]).gameObject;
             TectonicPlate scriptPlate = plate.GetComponent<TectonicPlate>();
-            if (scriptPlate.isLand && plate.transform.childCount > 1)
+            if (scriptPlate.isLand && plate.transform.childCount > 7)
             {
                 foundLandPlate = true;
             }
@@ -56,6 +56,7 @@ public class SpawnCapital : MonoBehaviour {
         var crtl = go.GetComponent<Captial>();
         crtl.unitType = unit;
         crtl.currentTile = tile;
+        crtl.player = p;
         crtl.InitUnit();
         tile.occupyingUnit = crtl;
     }

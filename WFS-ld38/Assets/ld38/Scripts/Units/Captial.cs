@@ -14,6 +14,8 @@ public class Captial : UnitController
     {
         bool killed = base.Damage(damage);
         player.health = health;
+
+        FindObjectOfType<GameController>().PlayerHurt(player);
         return killed;
     }
 
@@ -21,5 +23,6 @@ public class Captial : UnitController
     {
         base.Killed();
         //Set a game over.
+        FindObjectOfType<GameController>().PlayerKilled(player);
     }
 }
