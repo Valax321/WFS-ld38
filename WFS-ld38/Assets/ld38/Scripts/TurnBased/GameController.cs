@@ -91,7 +91,19 @@ public class GameController : MonoBehaviour
         }
         else if (gameFinished)
         {
-            Debug.Log("Game over.");
+            foreach (var p in players)
+            {
+                if (!p.isDead)
+                {
+                    UIController.instance.GameOver(p.number);
+                    isPaused = true;
+                    return;
+                }
+            }
+
+            UIController.instance.GameOver(-1);
+            isPaused = true;
+            return;
         }
 
         else if (gameStarted)

@@ -26,6 +26,7 @@ public class UIController : MonoBehaviour
     public GameObject pauseScreen;
 
     public History history;
+    public Text winText;
 
     public static UIController instance { get { return uiInstance; } }
     static UIController uiInstance;
@@ -167,5 +168,21 @@ public class UIController : MonoBehaviour
     public void PushNotification(string msg)
     {
         history.AddMessage(msg);
+    }
+
+    public void GameOver(int winner)
+    {
+        mainScreen.SetActive(false);
+        pauseScreen.SetActive(false);
+        winText.gameObject.SetActive(true);        
+        if (winner == -1)
+        {
+            // No one wins
+            winText.text = "Draw!";
+        }
+        else
+        {
+            winText.text = string.Format("Player {0} wins!", winner + 1);
+        }
     }
 }
