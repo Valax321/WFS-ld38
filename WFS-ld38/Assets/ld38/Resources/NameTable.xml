@@ -212,5 +212,45 @@
         <Element>New Spleen</Element>
       </Value>
     </Element>
+    <Element>
+      <Key>squid</Key>
+      <Value>
+        <Element>Multilimbed</Element>
+        <Element>Flappy</Element>
+        <Element>Not-a-Dog</Element>
+        <Element>Pale</Element>
+        <Element>Delicious</Element>
+        <Element>Probably Irradiated</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>freedom</Key>
+      <Value>
+        <Element>Freedom</Element>
+        <Element>Patriotic</Element>
+        <Element>Blessed</Element>
+        <Element>Free</Element>
+        <Element>Righteous</Element>
+        <Element>God-Given</Element>
+        <Element>Gun-Toting</Element>
+        <Element>Possibly Symbolic</Element>
+      </Value>
+    </Element>
+    <Element>
+      <Key>australian</Key>
+      <Value>
+        <Element>Fuckin'</Element>
+        <Element>Drunk</Element>
+        <Element>Whoppin' Great</Element>
+        <Element>Great Australian</Element>
+        <Element>The Big</Element>
+        <Element>True Blue</Element>
+        <Element>Dinkie Die</Element>
+        <Element>Right On</Element>
+        <Element>Criminal</Element>
+        <Element>0.45Mbps Upload</Element>
+        <Element>Legend</Element>
+      </Value>
+    </Element>
   </GroupTest>
 </NameTable>
