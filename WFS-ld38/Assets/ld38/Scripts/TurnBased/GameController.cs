@@ -762,7 +762,7 @@ public class Player
     public bool isDead;
 
     #region Gameplay Properties
-    public long currency;
+    public long currency = 4;
     public long currencyPerTurn;
     public int health;
 
