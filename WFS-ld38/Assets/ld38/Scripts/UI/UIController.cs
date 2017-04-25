@@ -24,6 +24,7 @@ public class UIController : MonoBehaviour
     public GameObject tileInfo;
     public GameObject mainScreen;
     public GameObject pauseScreen;
+    public GameObject currentPlayerDisplay;
 
     public History history;
     public Text winText;
@@ -188,6 +189,14 @@ public class UIController : MonoBehaviour
         else
         {
             winText.text = string.Format("Player {0} wins!", winner + 1);
+        }
+    }
+
+    public void UpdateCurrentPlayer(int currentPlayer)
+    {
+        if (mainScreen != null)
+        {
+            currentPlayerDisplay.GetComponent<Text>().text = string.Format("Player: {0}", currentPlayer + 1);
         }
     }
 }

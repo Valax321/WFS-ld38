@@ -337,6 +337,7 @@ public class GameController : MonoBehaviour
         UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
         UIController.instance.UpdateHP(p.health);
         UIController.instance.PushNotification(string.Format("Player {0}'s turn.", p.number + 1));
+        UIController.instance.UpdateCurrentPlayer(p.number);
     }
 
     void UpdateDebugInfo()
