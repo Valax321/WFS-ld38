@@ -41,7 +41,7 @@ public class History : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(1.5f);
 
             if (messages.Count > 0)
             {
