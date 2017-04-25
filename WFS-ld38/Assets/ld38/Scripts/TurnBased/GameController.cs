@@ -263,7 +263,6 @@ public class GameController : MonoBehaviour
                             scriptVoronoiTile.occupyingUnit = unit.GetComponent<UnitController>();
                             p.AddUnitToList(unit.GetComponent<UnitController>());
                             UIController.instance.UpdateCurrency(currencyName, p.currency, p.currencyPerTurn);
-                            CancelAllSelection();
                         }
                         else
                         {

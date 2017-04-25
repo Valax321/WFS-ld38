@@ -255,30 +255,26 @@ public class UnitController : MonoBehaviour
     public void MoveToTile(VoronoiTile tile)
     {
         forward = currentTile.centerPoint - tile.centerPoint;
-        if ((tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
+        if (CanMakeMove(1) && (tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
         {            
-            if (CanMakeMove(1))
+            currentTile.occupyingUnit = null;
+            var old = currentTile;
+            currentTile = tile;            
+            tile.occupyingUnit = this;            
+            MakeMove(1);
+            unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
+
+            if (visibleSpecial != null)
             {
-                currentTile.occupyingUnit = null;
-                var old = currentTile;
-                currentTile = tile;
-                tile.occupyingUnit = this;
-                MakeMove(1);
-                unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
-
-                if (visibleSpecial != null)
-                {
-                    visibleSpecial.SetActive(tile.baseBiome == VoronoiTile.Biomes.Water);
-                    visibleObject.SetActive(tile.baseBiome != VoronoiTile.Biomes.Water);
-                }
-
-                if (unitType.hasAbilities)
-                {
-                    aScript1.OnMove(old);
-                    aScript2.OnMove(old);
-                }
+                visibleSpecial.SetActive(tile.baseBiome == VoronoiTile.Biomes.Water);
+                visibleObject.SetActive(tile.baseBiome != VoronoiTile.Biomes.Water);
             }
-            UIController.instance.PushNotification("Out of moves for this unit.");
+
+            if (unitType.hasAbilities)
+            {
+                aScript1.OnMove(old);
+                aScript2.OnMove(old);
+            }
         }
         else
         {
