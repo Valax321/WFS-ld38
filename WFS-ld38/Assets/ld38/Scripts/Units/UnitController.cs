@@ -255,26 +255,30 @@ public class UnitController : MonoBehaviour
     public void MoveToTile(VoronoiTile tile)
     {
         forward = currentTile.centerPoint - tile.centerPoint;
-        if (CanMakeMove(1) && (tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
+        if ((tile.baseBiome != VoronoiTile.Biomes.Water || unitType.moveType != Unit.UnitType.Land))
         {            
-            currentTile.occupyingUnit = null;
-            var old = currentTile;
-            currentTile = tile;            
-            tile.occupyingUnit = this;            
-            MakeMove(1);
-            unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
-
-            if (visibleSpecial != null)
+            if (CanMakeMove(1))
             {
-                visibleSpecial.SetActive(tile.baseBiome == VoronoiTile.Biomes.Water);
-                visibleObject.SetActive(tile.baseBiome != VoronoiTile.Biomes.Water);
-            }
+                currentTile.occupyingUnit = null;
+                var old = currentTile;
+                currentTile = tile;
+                tile.occupyingUnit = this;
+                MakeMove(1);
+                unitSound.PlayOneShot(RandomSound(unitType.moveSounds));
 
-            if (unitType.hasAbilities)
-            {
-                aScript1.OnMove(old);
-                aScript2.OnMove(old);
+                if (visibleSpecial != null)
+                {
+                    visibleSpecial.SetActive(tile.baseBiome == VoronoiTile.Biomes.Water);
+                    visibleObject.SetActive(tile.baseBiome != VoronoiTile.Biomes.Water);
+                }
+
+                if (unitType.hasAbilities)
+                {
+                    aScript1.OnMove(old);
+                    aScript2.OnMove(old);
+                }
             }
+            UIController.instance.PushNotification("Out of moves for this unit.");
         }
         else
         {
